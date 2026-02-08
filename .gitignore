@@ -1,0 +1,7 @@
+cpu/logs/
+*.out
+*.err
+*.log
+myprog
+build/
+cmake-build-*/

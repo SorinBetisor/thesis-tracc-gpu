@@ -1,0 +1,18 @@
+executable = run.sh
+transfer_executable = True
+
+should_transfer_files = YES
+transfer_input_files = myprog.c
+when_to_transfer_output = ON_EXIT
+
+output = logs/compile_run.$(ClusterId).out
+error  = logs/compile_run.$(ClusterId).err
+log    = logs/compile_run.$(ClusterId).log
+
+request_cpus = 1
+request_memory = 1G
+
++UseOS = "el9"
++JobCategory = "express"
+
+queue
