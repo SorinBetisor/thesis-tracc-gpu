@@ -1,0 +1,9 @@
+\section{Research questions}
+
+\begin{enumerate}[label=\textbf{RQ\arabic*:}]
+  \item Which sub-steps of ambiguity resolution dominate runtime and memory consumption on the GPU, and how do these costs scale with the number of track candidates and the density of shared measurements?
+  \item Does redesigning the ambiguity-resolution working set from AoS (array of structs) to SoA (struct of arrays) measurably reduce GPU memory traffic and improve throughput without changing the selected set of tracks?
+  \item What is the performance cost of enforcing deterministic selection (stable tie-breaking and repeatability across runs), and is deterministic GPU output achievable without slowdowns?
+  \item Under which workload regimes (candidate count / conflict density) does GPU ambiguity resolution outperform the CPU baseline, and can a clear crossover point be identified?
+  \item (Optional) How does the final ambiguity resolution output compare to alternative approaches (CPU greedy baseline, ML-based solvers) in terms of duplicate suppression and quality proxies? What are the compute tradeoffs?
+\end{enumerate}
