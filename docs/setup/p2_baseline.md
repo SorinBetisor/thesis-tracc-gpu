@@ -117,12 +117,13 @@ Binaries end up in `build/bin/`, e.g. `traccc_seq_example`.
 
 ## 4. Run minimal baseline example
 
-The sequential full-chain example needs geometry files and an input directory. These paths are **relative to the current working directory** when you start the binary. Run from the **traccc source directory** so `geometries/` and `odd/` resolve correctly.
+The sequential full-chain example needs geometry files and an input directory. Paths are resolved via `TRACCC_TEST_DATA_DIR` (or build-time data dir). Set it to your traccc `data/` directory so `geometries/odd/` and `odd/` resolve correctly.
 
 **Correct command** (use `=1` for `--use-acts-geom-source`; bare flag misparses the next arg):
 
 ```bash
 cd "$TRACCC_SRC"
+export TRACCC_TEST_DATA_DIR="$TRACCC_SRC/data"
 
 ./build/bin/traccc_seq_example \
   --detector-file=geometries/odd/odd-detray_geometry_detray.json \
@@ -142,7 +143,8 @@ cd "$TRACCC_SRC"
 
 - **input-events=10**: run 10 events (minimal baseline).
 - **--use-acts-geom-source=1**: required; bare `--use-acts-geom-source` causes `invalid_bool_value` (next arg misparsed).
-- If the data script created a different path under `data/`, adjust `--input-directory` to match (e.g. whatever contains the event CSV/data for the ODD geometry).
+- If the data script created a different path under `data/`, adjust `TRACCC_TEST_DATA_DIR` and `--input-directory` to match.
+- **Acts/Spack compatibility:** If `traccc_seq_example` segfaults in `Acts::from_json` when reading the digitization config, apply the workaround in `traccc/io/src/json/read_digitization_config.cpp` (manual BinUtility parsing instead of `Acts::from_json`).
 
 Success = program runs to completion without crash; you may see logging and event counts.
 

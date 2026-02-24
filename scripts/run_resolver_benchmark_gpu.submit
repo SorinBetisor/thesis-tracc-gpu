@@ -1,0 +1,14 @@
+universe = vanilla
+executable = /bin/bash
+arguments = run_resolver_benchmark_gpu.sh
+transfer_executable = False
+transfer_input_files = run_resolver_benchmark_gpu.sh
+when_to_transfer_output = ON_EXIT
+log = logs/resolver_gpu_$(ClusterId).log
+output = logs/resolver_gpu_$(ClusterId).out
+error = logs/resolver_gpu_$(ClusterId).err
++UseOS = "el9"
++JobCategory = "express"
+requirements = (TARGET.GPUs > 0)
+request_gpus = 1
+request_memory = 4G
