@@ -216,4 +216,4 @@ When the profiling sweep is available, look for:
 - `--profile` is a **single-pass** measurement (1 warm-up + 1 timed pass). Phase times at sub-millisecond granularity (e.g., `initial_sort`, `output_copy`) will have relatively high noise.
 - Peak RSS is measured **at the end** of the full benchmark run, not per phase. It captures the high-water mark across all warmup + timed + profiling calls.
 - The eviction loop is timed as a **single monolithic phase**. Sub-operation costs (e.g., `std::find` vs `lower_bound` vs erase) require a separate instrumented build or a profiler (e.g., `perf`, `valgrind --tool=callgrind`).
-- These are CPU-only results; GPU comparison requires enabling `--backend=gpu` (planned, see `docs/next_steps.md`).
+- These are CPU-only results; GPU comparison uses `traccc_benchmark_resolver_cuda` (see `docs/setup/gpu_benchmark_doc.md`).
