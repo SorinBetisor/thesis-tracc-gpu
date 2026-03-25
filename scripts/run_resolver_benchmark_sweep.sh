@@ -17,8 +17,16 @@ RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 OUTDIR="${OUTDIR:-$THESIS_REPO/results/$RUN_ID}"
 mkdir -p "$OUTDIR"
 
+# Set PROFILE=1 to append per-phase timing to each result file.
+PROFILE="${PROFILE:-0}"
+PROFILE_FLAG=""
+if [[ "$PROFILE" == "1" ]]; then
+  PROFILE_FLAG="--profile"
+fi
+
 echo "=== Resolver benchmark sweep (3x3: n_candidates x conflict_density) ==="
-echo "Output: $OUTDIR"
+echo "Output:  $OUTDIR"
+echo "Profile: ${PROFILE_FLAG:-off}"
 echo ""
 
 for n in 1000 5000 10000; do
@@ -27,6 +35,7 @@ for n in 1000 5000 10000; do
     echo "Running n_candidates=$n conflict_density=$density -> $outfile"
     "$TRACCC_BIN" --synthetic --n-candidates="$n" \
       --conflict-density="$density" --repeats=10 --warmup=3 \
+      ${PROFILE_FLAG} \
       2>&1 | tee "$outfile"
     echo ""
   done
