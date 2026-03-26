@@ -1,0 +1,13 @@
+WARNING: GPU output hash does not match CPU reference
+WARNING: GPU selected 10000 tracks but CPU selected 20
+backend=gpu
+n_candidates=10000 n_selected=10000 n_removed=0
+time_ms_mean=9.92627 time_ms_std=3.29546 time_ms_median=8.8102 time_ms_p95=18.0473
+events_per_sec=100.743
+peak_memory_mb=136.828
+output_hash=12496256721014746807
+time_h2d_ms=41.5777
+time_d2h_ms=2.06612
+cpu_hash=1828567657085137221
+gpu_hash=12496256721014746807
+hash_match=false
