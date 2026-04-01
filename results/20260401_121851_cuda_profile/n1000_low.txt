@@ -1,0 +1,21 @@
+backend=gpu
+n_candidates=1000 n_selected=744 n_removed=256
+time_ms_mean=10.5071 time_ms_std=0.134182 time_ms_median=10.5004 time_ms_p95=10.853
+events_per_sec=95.1741
+peak_memory_mb=129.691
+output_hash=3455467726349387271
+time_h2d_ms=5.36529
+time_d2h_ms=0.319448
+cpu_hash=3455467726349387271
+gpu_hash=3455467726349387271
+hash_match=true
+profile_filter_setup_ms=0.121248
+profile_unique_meas_ms=0.423936
+profile_inverted_index_ms=0.48128
+profile_shared_count_ms=0.038912
+profile_initial_sort_ms=0.186368
+profile_eviction_loop_ms=9.0495
+profile_output_copy_ms=0.082528
+profile_eviction_graph_launches=200
+profile_unique_meas_count=6024
+profile_hash_match=true

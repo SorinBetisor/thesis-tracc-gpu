@@ -123,39 +123,76 @@ hash_match=true|false
 
 ---
 
-## Is per-phase profiling included?
+## Per-phase profiling
 
-**No.** The GPU benchmark does not have a `--profile` flag.
+### `--profile` flag (CUDA event timers)
 
-Per-phase timing on the CPU benchmark was implemented by reimplementing the algorithm with `std::chrono` checkpoints between phases. This approach does not translate to the GPU:
+Pass `--profile` to run one extra resolver call with CUDA event timing inserted at each phase boundary. Output fields mirror the CPU benchmark exactly:
 
-- The CUDA resolver is structured as a pipeline of kernels inside a **CUDA Graph loop**. Inserting `cudaEventRecord` / `cudaEventElapsedTime` pairs between kernels inside a graph capture is not supported.
-- Even outside a graph, timing individual kernels in an async pipeline adds synchronization overhead that distorts the measurement.
-
-### GPU kernel-level profiling: use external tools
-
-For sub-phase GPU timing use the standard CUDA profiling toolchain:
-
-```bash
-# Nsight Systems — timeline of all kernels, memory transfers, CPU/GPU overlap
-nsys profile --output=$OUTDIR/nsys_report \
-  ./traccc_benchmark_resolver_cuda \
-  --synthetic --n-candidates=10000 --conflict-density=low \
-  --repeats=1 --warmup=1
-
-# Nsight Compute — per-kernel roofline, occupancy, memory bandwidth
-ncu --set full \
-  -o $OUTDIR/ncu_report \
-  ./traccc_benchmark_resolver_cuda \
-  --synthetic --n-candidates=1000 --conflict-density=med \
-  --repeats=1 --warmup=0
+```
+profile_filter_setup_ms=<x>
+profile_unique_meas_ms=<x>
+profile_inverted_index_ms=<x>
+profile_shared_count_ms=<x>
+profile_initial_sort_ms=<x>
+profile_eviction_loop_ms=<x>
+profile_output_copy_ms=<x>
+profile_eviction_graph_launches=<N>
+profile_unique_meas_count=<N>
+profile_hash_match=true|false
 ```
 
-Nsight Systems produces a `.nsys-rep` file viewable in the Nsight Systems GUI. Nsight Compute produces a `.ncu-rep` file.
+Times are measured with `cudaEventRecord` / `cudaEventElapsedTime` at the existing stream-synchronization checkpoints in `greedy_ambiguity_resolution_algorithm.cu`. They capture **GPU kernel execution time only** — host-side work (e.g. the D2H copy needed to size the `tracks_per_measurement` buffer) that occurs between phase boundaries is not included. This is the correct scope for GPU compute analysis.
 
-For a quick text summary without the GUI:
+The CUDA Graph inside the eviction loop cannot be profiled at the individual-kernel level from C++ code; `profile_eviction_loop_ms` covers the entire graph-execution loop. For kernel-level breakdown inside the graph use nsys or ncu (see below).
+
+**Phase mapping to CPU benchmark:**
+
+| `profile_*_ms` field | GPU kernels included | CPU equivalent |
+|----------------------|----------------------|----------------|
+| `filter_setup_ms`    | `fill_vectors`       | `filter_setup` |
+| `unique_meas_ms`     | Thrust sort/unique/reduce, `fill_unique_meas_id_map` | `unique_meas` |
+| `inverted_index_ms`  | `fill_tracks_per_measurement`, `sort_tracks_per_measurement` | `inverted_index` |
+| `shared_count_ms`    | `count_shared_measurements`     | `shared_count` |
+| `initial_sort_ms`    | Thrust `transform` (rel_shared), `thrust::copy`, `thrust::sort` | `initial_sort` |
+| `eviction_loop_ms`   | CUDA Graph loop (all eviction kernels × `eviction_graph_launches` launches) | `eviction_loop` |
+| `output_copy_ms`     | `fill_track_candidates` | `output_copy` |
+
+### NVTX range markers (nsys timeline)
+
+NVTX ranges named `gpu_ar_filter_setup`, `gpu_ar_unique_meas`, `gpu_ar_inverted_index`, `gpu_ar_shared_count`, `gpu_ar_initial_sort`, `gpu_ar_eviction_loop`, `gpu_ar_output_copy` are inserted unconditionally in the algorithm. When the binary is run under `nsys profile --trace=cuda,nvtx`, these appear as labeled CPU-side ranges in the timeline, aligned with the corresponding GPU kernels.
+
+### Nsight Systems + Nsight Compute profiling script
+
+`scripts/run_resolver_profile_nsys.sh` automates both tools:
+
 ```bash
-nsys stats $OUTDIR/nsys_report.nsys-rep
+cd "$THESIS_REPO/scripts"
+
+# Full profiling (nsys + ncu) for n=10000 med density:
+./run_resolver_profile_nsys.sh --n-candidates=10000 --conflict-density=med
+
+# nsys only (faster, no per-kernel kernel-metric overhead):
+./run_resolver_profile_nsys.sh --nsys-only
+
+# ncu only:
+./run_resolver_profile_nsys.sh --ncu-only
+```
+
+Outputs are saved to `results/<timestamp>_profile_nsys/`:
+- `n<N>_<density>.nsys-rep` — Nsight Systems timeline report
+- `n<N>_<density>_ncu.ncu-rep` — Nsight Compute kernel metrics
+- `n<N>_<density>_profile.txt` — `--profile` text output (same fields as above)
+
+```bash
+# Open Nsight Systems GUI
+nsys-ui results/<timestamp>_profile_nsys/n10000_med.nsys-rep
+
+# Print GPU trace summary as text
+nsys stats --report gputrace results/<timestamp>_profile_nsys/n10000_med.nsys-rep
+
+# Print ncu kernel summary
+ncu --import results/<timestamp>_profile_nsys/n10000_med_ncu.ncu-rep --print-summary
 ```
 
 ---
@@ -274,7 +311,7 @@ Planned reference configuration: Stoomboot `wn-lot-001` (NVIDIA Quadro GV100), s
 
 ## Limitations of the current GPU benchmark
 
-- **No per-phase profiling flag.** Sub-kernel timing requires Nsight Systems / Nsight Compute (see above).
+- **`--profile` measures phase boundaries, not individual kernels inside the CUDA Graph.** `profile_eviction_loop_ms` is a single bulk time. Use nsys/ncu for kernel-level breakdown within the loop.
 - **No device memory reporting.** `peak_memory_mb` is host RSS only. Device peak memory usage must be measured externally (`nvidia-smi dmon` or `cudaMemGetInfo` instrumentation).
 - **H2D/D2H timed as single passes.** For variance of transfer times, run with a larger `--repeats` and time the full transfer loop separately if needed.
 - **CUDA Graph re-instantiation cost** is included in the first outer-loop iteration but not measured in isolation. At large `n_candidates`, this overhead is negligible relative to the total resolver time.
