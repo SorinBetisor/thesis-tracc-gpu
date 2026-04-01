@@ -1,10 +1,12 @@
 # GPU Ambiguity Resolver Correctness Failures – Investigation Record
 
 **Date of investigation:** 2026-03-26
+**Date of fix and verification:** 2026-03-31
 **Investigator:** Sorin Bețișor
 **Environment:** Nikhef Stoomboot, `wn-lot-001`, NVIDIA Quadro GV100, CUDA 12.5, SM 70
 **Binary:** `traccc_benchmark_resolver_cuda` (built with `-DCMAKE_CUDA_ARCHITECTURES=70`)
 **Relevant source file:** `traccc/device/cuda/src/ambiguity_resolution/greedy_ambiguity_resolution_algorithm.cu`
+**Status: FIXED** — all 4 bugs patched, all 9 benchmark configs pass, all upstream tests pass (including previously-disabled `DISABLED_CUDAStandard`)
 
 ---
 
@@ -171,23 +173,89 @@ After applying these fixes, the full 3×3 sweep should be rerun and `hash_match`
 
 ---
 
-## 6. Impact on thesis measurements
+## 6. Fix applied and verified (2026-03-31)
 
-- **All 7 `n_removed=0` GPU results are invalid.** The GPU performed zero ambiguity resolution — it is simply returning all input tracks.
-- **The `n5000_high` partial result (1 800 selected vs CPU 17) is also invalid.** Correct answer is 17.
-- **Only `n10000_low` is a valid data point.** For this configuration: GPU mean latency 46 ms vs CPU mean latency 45 ms. The GPU does not show a speedup here; H2D transfer dominates (41.9 ms) and the actual GPU kernel time is a fraction of that.
-- **Until the bugs are fixed, the benchmark can only report that the GPU resolver produces wrong output for 8 out of 9 tested configurations.**
-- **For the thesis narrative**, this is valuable: you identified and localised specific upstream bugs that explain why the GPU resolver fails at scale, and you can demonstrate them in the context of the broader "GPU resolver is not yet production-ready" finding.
+### The 4-line diff
+
+```diff
+--- a/device/cuda/src/ambiguity_resolution/greedy_ambiguity_resolution_algorithm.cu
++++ b/device/cuda/src/ambiguity_resolution/greedy_ambiguity_resolution_algorithm.cu
+@@ (after line 431)
++    cudaMemsetAsync(terminate_device.get(), 0, sizeof(int), stream);
+@@ (line 440)
+-                    cudaMemcpyHostToDevice, stream);
++                    cudaMemcpyDeviceToDevice, stream);
+@@ (line 488)
+-    m_copy.get().setup(block_offsets_buffer)->ignore();
++    m_copy.get().setup(scanned_block_offsets_buffer)->ignore();
+@@ (after line 669)
++        m_stream.get().synchronize();
+```
+
+### Post-fix GPU sweep results (run `20260331_203050_cuda`)
+
+| Config | n\_cand | n\_sel\_gpu | n\_sel\_cpu | n\_removed | time\_mean\_ms | h2d\_ms | hash\_match |
+|--------|---------|------------|------------|------------|----------------|---------|-------------|
+| n1000\_low  | 1 000  | 744   | 744   | 256   | 9.75  | 5.46  | **true** |
+| n1000\_med  | 1 000  | 413   | 413   | 587   | 17.00 | 4.51  | **true** |
+| n1000\_high | 1 000  | 19    | 19    | 981   | 8.18  | 4.51  | **true** |
+| n5000\_low  | 5 000  | 2 070 | 2 070 | 2 930 | 26.61 | 20.97 | **true** |
+| n5000\_med  | 5 000  | 623   | 623   | 4 377 | 34.83 | 21.22 | **true** |
+| n5000\_high | 5 000  | 17    | 17    | 4 983 | 13.38 | 20.46 | **true** |
+| n10000\_low | 10 000 | 2 683 | 2 683 | 7 317 | 34.19 | 41.64 | **true** |
+| n10000\_med | 10 000 | 666   | 666   | 9 334 | 36.06 | 41.81 | **true** |
+| n10000\_high| 10 000 | 20    | 20    | 9 980 | 21.04 | 41.56 | **true** |
+
+**All 9 configurations: `hash_match=true`.** GPU and CPU produce identical selected track sets.
+
+### Upstream test suite results (post-fix)
+
+All tests run on `wn-lot-001` with the patched `.cu` file:
+
+- **17 handwritten tests** (`CUDAAmbiguitySolverTests.GreedyResolverTest0–17`): all PASS
+- **2 `CUDASparse`**: all PASS
+- **2 `CUDADense`**: all PASS
+- **2 `CUDALong`**: all PASS
+- **2 `CUDASimple`**: all PASS
+- **2 `DISABLED_CUDAStandard`** (forced with `--gtest_also_run_disabled_tests`): **all PASS**
+
+Total: **27 tests, 27 passed, 0 failed.**
+
+The `DISABLED_CUDAStandard` tests use 50 000 tracks × 5 events, CPU↔GPU comparison with exact track-pattern matching. These are the tests the upstream developers disabled with `"not working for some not fully understood reason"`. They now pass with all four bugs fixed.
+
+### Performance comparison from the `DISABLED_CUDAStandard` tests (50k tracks)
+
+| Event | CPU (ms) | CUDA (ms) | Speedup |
+|-------|----------|-----------|---------|
+| 0     | 1 029    | 80        | 12.9×   |
+| 1     | 685      | 63        | 10.9×   |
+| 2     | 534      | 63        | 8.5×    |
+| 3     | 537      | 65        | 8.3×    |
+| 4     | 540      | 65        | 8.3×    |
+
+At 50 000 tracks the GPU resolver is ~8–13× faster than the CPU (these timings include H2D/D2H for CUDA).
 
 ---
 
-## 7. Files involved
+## 7. Impact on thesis
+
+The bug fix is a concrete thesis contribution:
+
+1. **Upstream code contribution:** A 4-line fix to the traccc CUDA greedy ambiguity resolver that resolves correctness failures the developers themselves could not diagnose. This can be submitted as a PR to the traccc repository.
+2. **Full benchmark baseline unlocked:** All 9 synthetic sweep configurations now produce valid CPU↔GPU comparisons.
+3. **Thesis narrative:** The investigation demonstrates systematic correctness validation methodology — the harness detected the bugs, the analysis localised them, and the fix was verified against both the benchmark sweep and the upstream test suite.
+4. **The `DISABLED_CUDAStandard` test can now be re-enabled upstream**, removing the disabled test prefix.
+
+---
+
+## 8. Files involved
 
 | Path | Role |
 |------|------|
-| `traccc/device/cuda/src/ambiguity_resolution/greedy_ambiguity_resolution_algorithm.cu` | Contains all four bugs |
-| `traccc/device/cuda/src/ambiguity_resolution/kernels/remove_tracks.cu` | Reads `terminate_device`; immediately returns if it is non-zero |
-| `traccc/tests/cuda/test_ambiguity_resolution.cpp` | Lines 900–909: upstream `DISABLED_CUDAStandard` with acknowledgement of the bug |
-| `traccc/examples/run/cuda/benchmark_resolver_cuda.cpp` | Our benchmark harness (calls the resolver 14 times per config) |
-| `results/20260326_124050_cuda/` | Full 3×3 GPU sweep results showing the failures |
-| `results/cpu_benchmark_ambig_resolution_synthetic/20260325_profile/` | CPU 3×3 sweep results (all correct, all `hash_match=true`) |
+| `traccc/device/cuda/src/ambiguity_resolution/greedy_ambiguity_resolution_algorithm.cu` | Contains all four bugs (now fixed) |
+| `traccc/device/cuda/src/ambiguity_resolution/kernels/remove_tracks.cu` | Reads `terminate_device`; immediately returns if non-zero |
+| `traccc/tests/cuda/test_ambiguity_resolution.cpp` | Lines 900–909: upstream `DISABLED_CUDAStandard` (now passes) |
+| `traccc/examples/run/cuda/benchmark_resolver_cuda.cpp` | Our benchmark harness |
+| `results/20260326_124050_cuda/` | Pre-fix GPU sweep (8/9 failed) |
+| `results/20260331_203050_cuda/` | Post-fix GPU sweep (9/9 passed) |
+| `results/cpu_benchmark_ambig_resolution_synthetic/20260325_profile/` | CPU sweep (all correct) |
