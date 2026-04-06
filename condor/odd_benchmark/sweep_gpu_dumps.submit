@@ -1,0 +1,24 @@
+# GPU resolver benchmark on real ODD muon event dumps — one job per dump file.
+# All jobs run in parallel on NVIDIA GPU nodes.
+#
+# Do NOT submit directly. Use the wrapper:
+#   ./submit_odd_gpu_benchmark.sh --dumps-dir /path/to/dumps --outdir /path/to/results
+
+universe            = vanilla
+executable          = /bin/bash
+arguments           = run_gpu_dump_job.sh $(dump_path) $(OUTDIR)
+transfer_executable = False
+
++UseOS       = "el9"
++JobCategory = "express"
+
+request_cpus   = 1
+request_memory = 4G
+request_gpus   = 1
+requirements   = (TARGET.GPUs > 0) && (CUDACapability >= 700)
+
+log    = logs/gpu_dumps_$(ClusterId).log
+output = logs/gpu_dumps_$(ClusterId)_$(ProcId).out
+error  = logs/gpu_dumps_$(ClusterId)_$(ProcId).err
+
+queue dump_path from dump_list.txt

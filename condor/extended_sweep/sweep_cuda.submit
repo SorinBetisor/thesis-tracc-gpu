@@ -1,0 +1,61 @@
+# Extended GPU resolver sweep — 30 independent jobs (10 n_candidates × 3 densities).
+# Targets NVIDIA GPU nodes (SM70+). All 30 jobs run in parallel.
+#
+# Do NOT submit this file directly. Use the wrapper:
+#   ./submit_extended_sweep.sh
+#
+# Requirements explanation:
+#   CUDACapability >= 700  →  Volta (V100/GV100, SM70) and newer
+#   This matches wn-lot-{008,009} (V100) and wn-pijl-{002..007} (L40S/SM89).
+#   The binary was compiled with -DCMAKE_CUDA_ARCHITECTURES=70.
+#   If targeting L40S exclusively (SM89), change to CUDACapability >= 890.
+
+universe            = vanilla
+executable          = /bin/bash
+arguments           = run_cuda_job.sh $(n) $(density) $(OUTDIR)
+transfer_executable = False
+
++UseOS       = "el9"
++JobCategory = "express"
+
+request_cpus   = 1
+request_memory = 4G
+request_gpus   = 1
+requirements   = (TARGET.GPUs > 0) && (CUDACapability >= 700)
+
+log    = logs/cuda_sweep_$(ClusterId).log
+output = logs/cuda_sweep_$(ClusterId)_$(ProcId).out
+error  = logs/cuda_sweep_$(ClusterId)_$(ProcId).err
+
+queue n, density from (
+    100   low
+    100   med
+    100   high
+    500   low
+    500   med
+    500   high
+    1000  low
+    1000  med
+    1000  high
+    2000  low
+    2000  med
+    2000  high
+    3000  low
+    3000  med
+    3000  high
+    5000  low
+    5000  med
+    5000  high
+    7500  low
+    7500  med
+    7500  high
+    10000 low
+    10000 med
+    10000 high
+    20000 low
+    20000 med
+    20000 high
+    50000 low
+    50000 med
+    50000 high
+)

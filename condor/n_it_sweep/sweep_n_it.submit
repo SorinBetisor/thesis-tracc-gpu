@@ -1,0 +1,113 @@
+# n_it sensitivity sweep — 90 independent GPU jobs.
+# (5 n_candidates × 3 densities × 6 n_it values = 90 configs)
+# All run in parallel. Use submit_n_it_sweep.sh to launch.
+
+universe            = vanilla
+executable          = /bin/bash
+arguments           = run_n_it_job.sh $(n) $(density) $(n_it) $(OUTDIR)
+transfer_executable = False
+
++UseOS       = "el9"
++JobCategory = "express"
+
+request_cpus   = 1
+request_memory = 4G
+request_gpus   = 1
+requirements   = (TARGET.GPUs > 0) && (CUDACapability >= 700)
+
+log    = logs/n_it_sweep_$(ClusterId).log
+output = logs/n_it_sweep_$(ClusterId)_$(ProcId).out
+error  = logs/n_it_sweep_$(ClusterId)_$(ProcId).err
+
+queue n, density, n_it from (
+    100   low   1
+    100   low   5
+    100   low   10
+    100   low   25
+    100   low   50
+    100   low   100
+    100   med   1
+    100   med   5
+    100   med   10
+    100   med   25
+    100   med   50
+    100   med   100
+    100   high  1
+    100   high  5
+    100   high  10
+    100   high  25
+    100   high  50
+    100   high  100
+    500   low   1
+    500   low   5
+    500   low   10
+    500   low   25
+    500   low   50
+    500   low   100
+    500   med   1
+    500   med   5
+    500   med   10
+    500   med   25
+    500   med   50
+    500   med   100
+    500   high  1
+    500   high  5
+    500   high  10
+    500   high  25
+    500   high  50
+    500   high  100
+    1000  low   1
+    1000  low   5
+    1000  low   10
+    1000  low   25
+    1000  low   50
+    1000  low   100
+    1000  med   1
+    1000  med   5
+    1000  med   10
+    1000  med   25
+    1000  med   50
+    1000  med   100
+    1000  high  1
+    1000  high  5
+    1000  high  10
+    1000  high  25
+    1000  high  50
+    1000  high  100
+    5000  low   1
+    5000  low   5
+    5000  low   10
+    5000  low   25
+    5000  low   50
+    5000  low   100
+    5000  med   1
+    5000  med   5
+    5000  med   10
+    5000  med   25
+    5000  med   50
+    5000  med   100
+    5000  high  1
+    5000  high  5
+    5000  high  10
+    5000  high  25
+    5000  high  50
+    5000  high  100
+    10000 low   1
+    10000 low   5
+    10000 low   10
+    10000 low   25
+    10000 low   50
+    10000 low   100
+    10000 med   1
+    10000 med   5
+    10000 med   10
+    10000 med   25
+    10000 med   50
+    10000 med   100
+    10000 high  1
+    10000 high  5
+    10000 high  10
+    10000 high  25
+    10000 high  50
+    10000 high  100
+)
