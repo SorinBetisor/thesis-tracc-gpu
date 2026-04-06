@@ -1,0 +1,11 @@
+event dump_file n_candidates cpu_time_ms cpu_hash
+event_000 data/odd_muon_dumps/20260406/event_000.json 80n_selected 0.338178time_ms_std n/a 14987783489575302542 n/a n/a
+event_001 data/odd_muon_dumps/20260406/event_001.json 93n_selected 0.422133time_ms_std n/a 12453142086421834701 n/a n/a
+event_002 data/odd_muon_dumps/20260406/event_002.json 88n_selected 0.366087time_ms_std n/a 9345008157390202147 n/a n/a
+event_003 data/odd_muon_dumps/20260406/event_003.json 91n_selected 0.360104time_ms_std n/a 4431414398113696129 n/a n/a
+event_004 data/odd_muon_dumps/20260406/event_004.json 85n_selected 0.339776time_ms_std n/a 1260705027947221447 n/a n/a
+event_005 data/odd_muon_dumps/20260406/event_005.json 88n_selected 0.388928time_ms_std n/a 13485771994253042740 n/a n/a
+event_006 data/odd_muon_dumps/20260406/event_006.json 80n_selected 0.332937time_ms_std n/a 18194053673459034722 n/a n/a
+event_007 data/odd_muon_dumps/20260406/event_007.json 83n_selected 0.335693time_ms_std n/a 7893564837571112517 n/a n/a
+event_008 data/odd_muon_dumps/20260406/event_008.json 91n_selected 0.402706time_ms_std n/a 5612447471269170120 n/a n/a
+event_009 data/odd_muon_dumps/20260406/event_009.json 89n_selected 0.410149time_ms_std n/a 5979448107049964117 n/a n/a

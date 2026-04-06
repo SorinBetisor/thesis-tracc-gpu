@@ -1,0 +1,3042 @@
+{
+  "config": {
+    "max_iterations": 4294967295,
+    "max_shared_meas": 1,
+    "min_meas_per_track": 3
+  },
+  "measurements": [
+    {
+      "identifier": 1
+    },
+    {
+      "identifier": 2
+    },
+    {
+      "identifier": 4
+    },
+    {
+      "identifier": 5
+    },
+    {
+      "identifier": 6
+    },
+    {
+      "identifier": 7
+    },
+    {
+      "identifier": 8
+    },
+    {
+      "identifier": 9
+    },
+    {
+      "identifier": 10
+    },
+    {
+      "identifier": 11
+    },
+    {
+      "identifier": 12
+    },
+    {
+      "identifier": 13
+    },
+    {
+      "identifier": 15
+    },
+    {
+      "identifier": 18
+    },
+    {
+      "identifier": 20
+    },
+    {
+      "identifier": 22
+    },
+    {
+      "identifier": 23
+    },
+    {
+      "identifier": 24
+    },
+    {
+      "identifier": 25
+    },
+    {
+      "identifier": 26
+    },
+    {
+      "identifier": 27
+    },
+    {
+      "identifier": 28
+    },
+    {
+      "identifier": 29
+    },
+    {
+      "identifier": 30
+    },
+    {
+      "identifier": 32
+    },
+    {
+      "identifier": 33
+    },
+    {
+      "identifier": 34
+    },
+    {
+      "identifier": 35
+    },
+    {
+      "identifier": 36
+    },
+    {
+      "identifier": 37
+    },
+    {
+      "identifier": 38
+    },
+    {
+      "identifier": 39
+    },
+    {
+      "identifier": 40
+    },
+    {
+      "identifier": 42
+    },
+    {
+      "identifier": 43
+    },
+    {
+      "identifier": 44
+    },
+    {
+      "identifier": 45
+    },
+    {
+      "identifier": 46
+    },
+    {
+      "identifier": 47
+    },
+    {
+      "identifier": 48
+    },
+    {
+      "identifier": 49
+    },
+    {
+      "identifier": 51
+    },
+    {
+      "identifier": 52
+    },
+    {
+      "identifier": 53
+    },
+    {
+      "identifier": 54
+    },
+    {
+      "identifier": 55
+    },
+    {
+      "identifier": 56
+    },
+    {
+      "identifier": 57
+    },
+    {
+      "identifier": 58
+    },
+    {
+      "identifier": 59
+    },
+    {
+      "identifier": 60
+    },
+    {
+      "identifier": 61
+    },
+    {
+      "identifier": 62
+    },
+    {
+      "identifier": 63
+    },
+    {
+      "identifier": 64
+    },
+    {
+      "identifier": 65
+    },
+    {
+      "identifier": 66
+    },
+    {
+      "identifier": 67
+    },
+    {
+      "identifier": 68
+    },
+    {
+      "identifier": 69
+    },
+    {
+      "identifier": 70
+    },
+    {
+      "identifier": 71
+    },
+    {
+      "identifier": 72
+    },
+    {
+      "identifier": 73
+    },
+    {
+      "identifier": 74
+    },
+    {
+      "identifier": 75
+    },
+    {
+      "identifier": 76
+    },
+    {
+      "identifier": 77
+    },
+    {
+      "identifier": 78
+    },
+    {
+      "identifier": 79
+    },
+    {
+      "identifier": 80
+    },
+    {
+      "identifier": 81
+    },
+    {
+      "identifier": 82
+    },
+    {
+      "identifier": 83
+    },
+    {
+      "identifier": 84
+    },
+    {
+      "identifier": 85
+    },
+    {
+      "identifier": 86
+    },
+    {
+      "identifier": 87
+    },
+    {
+      "identifier": 88
+    },
+    {
+      "identifier": 89
+    },
+    {
+      "identifier": 90
+    },
+    {
+      "identifier": 91
+    },
+    {
+      "identifier": 92
+    },
+    {
+      "identifier": 93
+    },
+    {
+      "identifier": 94
+    },
+    {
+      "identifier": 95
+    },
+    {
+      "identifier": 96
+    },
+    {
+      "identifier": 97
+    },
+    {
+      "identifier": 98
+    },
+    {
+      "identifier": 99
+    },
+    {
+      "identifier": 100
+    },
+    {
+      "identifier": 101
+    },
+    {
+      "identifier": 102
+    },
+    {
+      "identifier": 103
+    },
+    {
+      "identifier": 104
+    },
+    {
+      "identifier": 105
+    },
+    {
+      "identifier": 106
+    },
+    {
+      "identifier": 107
+    },
+    {
+      "identifier": 108
+    },
+    {
+      "identifier": 109
+    },
+    {
+      "identifier": 110
+    },
+    {
+      "identifier": 111
+    },
+    {
+      "identifier": 112
+    },
+    {
+      "identifier": 113
+    },
+    {
+      "identifier": 114
+    },
+    {
+      "identifier": 115
+    },
+    {
+      "identifier": 116
+    },
+    {
+      "identifier": 117
+    },
+    {
+      "identifier": 118
+    },
+    {
+      "identifier": 119
+    },
+    {
+      "identifier": 120
+    },
+    {
+      "identifier": 121
+    },
+    {
+      "identifier": 122
+    },
+    {
+      "identifier": 123
+    },
+    {
+      "identifier": 124
+    },
+    {
+      "identifier": 125
+    },
+    {
+      "identifier": 126
+    },
+    {
+      "identifier": 127
+    },
+    {
+      "identifier": 128
+    },
+    {
+      "identifier": 129
+    },
+    {
+      "identifier": 130
+    },
+    {
+      "identifier": 131
+    },
+    {
+      "identifier": 132
+    },
+    {
+      "identifier": 133
+    },
+    {
+      "identifier": 134
+    },
+    {
+      "identifier": 135
+    },
+    {
+      "identifier": 136
+    },
+    {
+      "identifier": 137
+    },
+    {
+      "identifier": 138
+    },
+    {
+      "identifier": 139
+    },
+    {
+      "identifier": 140
+    },
+    {
+      "identifier": 141
+    },
+    {
+      "identifier": 142
+    },
+    {
+      "identifier": 143
+    },
+    {
+      "identifier": 144
+    },
+    {
+      "identifier": 145
+    },
+    {
+      "identifier": 146
+    },
+    {
+      "identifier": 147
+    },
+    {
+      "identifier": 148
+    },
+    {
+      "identifier": 149
+    },
+    {
+      "identifier": 150
+    },
+    {
+      "identifier": 151
+    },
+    {
+      "identifier": 152
+    },
+    {
+      "identifier": 153
+    },
+    {
+      "identifier": 154
+    },
+    {
+      "identifier": 155
+    },
+    {
+      "identifier": 156
+    },
+    {
+      "identifier": 157
+    },
+    {
+      "identifier": 158
+    },
+    {
+      "identifier": 159
+    },
+    {
+      "identifier": 160
+    },
+    {
+      "identifier": 161
+    },
+    {
+      "identifier": 162
+    },
+    {
+      "identifier": 163
+    },
+    {
+      "identifier": 164
+    },
+    {
+      "identifier": 165
+    },
+    {
+      "identifier": 166
+    },
+    {
+      "identifier": 167
+    },
+    {
+      "identifier": 168
+    },
+    {
+      "identifier": 169
+    },
+    {
+      "identifier": 170
+    },
+    {
+      "identifier": 171
+    },
+    {
+      "identifier": 172
+    },
+    {
+      "identifier": 173
+    },
+    {
+      "identifier": 174
+    },
+    {
+      "identifier": 175
+    },
+    {
+      "identifier": 176
+    },
+    {
+      "identifier": 177
+    },
+    {
+      "identifier": 178
+    },
+    {
+      "identifier": 179
+    },
+    {
+      "identifier": 180
+    },
+    {
+      "identifier": 183
+    },
+    {
+      "identifier": 187
+    },
+    {
+      "identifier": 188
+    },
+    {
+      "identifier": 189
+    },
+    {
+      "identifier": 190
+    },
+    {
+      "identifier": 191
+    },
+    {
+      "identifier": 192
+    },
+    {
+      "identifier": 193
+    },
+    {
+      "identifier": 194
+    },
+    {
+      "identifier": 195
+    },
+    {
+      "identifier": 196
+    },
+    {
+      "identifier": 197
+    },
+    {
+      "identifier": 198
+    },
+    {
+      "identifier": 205
+    },
+    {
+      "identifier": 208
+    },
+    {
+      "identifier": 209
+    },
+    {
+      "identifier": 211
+    },
+    {
+      "identifier": 212
+    },
+    {
+      "identifier": 214
+    },
+    {
+      "identifier": 215
+    },
+    {
+      "identifier": 217
+    },
+    {
+      "identifier": 218
+    },
+    {
+      "identifier": 219
+    },
+    {
+      "identifier": 220
+    },
+    {
+      "identifier": 222
+    },
+    {
+      "identifier": 223
+    },
+    {
+      "identifier": 224
+    },
+    {
+      "identifier": 225
+    },
+    {
+      "identifier": 226
+    },
+    {
+      "identifier": 227
+    },
+    {
+      "identifier": 228
+    },
+    {
+      "identifier": 230
+    },
+    {
+      "identifier": 231
+    },
+    {
+      "identifier": 232
+    },
+    {
+      "identifier": 233
+    },
+    {
+      "identifier": 234
+    },
+    {
+      "identifier": 235
+    },
+    {
+      "identifier": 236
+    },
+    {
+      "identifier": 237
+    },
+    {
+      "identifier": 238
+    },
+    {
+      "identifier": 239
+    },
+    {
+      "identifier": 240
+    },
+    {
+      "identifier": 241
+    },
+    {
+      "identifier": 242
+    },
+    {
+      "identifier": 243
+    },
+    {
+      "identifier": 244
+    },
+    {
+      "identifier": 245
+    },
+    {
+      "identifier": 246
+    },
+    {
+      "identifier": 247
+    },
+    {
+      "identifier": 248
+    },
+    {
+      "identifier": 249
+    },
+    {
+      "identifier": 250
+    },
+    {
+      "identifier": 252
+    },
+    {
+      "identifier": 253
+    },
+    {
+      "identifier": 254
+    },
+    {
+      "identifier": 255
+    },
+    {
+      "identifier": 256
+    },
+    {
+      "identifier": 257
+    },
+    {
+      "identifier": 262
+    },
+    {
+      "identifier": 263
+    },
+    {
+      "identifier": 264
+    },
+    {
+      "identifier": 265
+    },
+    {
+      "identifier": 266
+    },
+    {
+      "identifier": 267
+    },
+    {
+      "identifier": 268
+    },
+    {
+      "identifier": 269
+    },
+    {
+      "identifier": 270
+    },
+    {
+      "identifier": 271
+    },
+    {
+      "identifier": 272
+    },
+    {
+      "identifier": 273
+    },
+    {
+      "identifier": 274
+    },
+    {
+      "identifier": 275
+    },
+    {
+      "identifier": 276
+    },
+    {
+      "identifier": 277
+    },
+    {
+      "identifier": 278
+    },
+    {
+      "identifier": 279
+    },
+    {
+      "identifier": 280
+    },
+    {
+      "identifier": 281
+    },
+    {
+      "identifier": 282
+    },
+    {
+      "identifier": 283
+    },
+    {
+      "identifier": 284
+    },
+    {
+      "identifier": 285
+    },
+    {
+      "identifier": 286
+    },
+    {
+      "identifier": 287
+    },
+    {
+      "identifier": 288
+    },
+    {
+      "identifier": 289
+    },
+    {
+      "identifier": 290
+    },
+    {
+      "identifier": 291
+    },
+    {
+      "identifier": 292
+    },
+    {
+      "identifier": 293
+    },
+    {
+      "identifier": 294
+    },
+    {
+      "identifier": 295
+    },
+    {
+      "identifier": 296
+    },
+    {
+      "identifier": 297
+    },
+    {
+      "identifier": 298
+    },
+    {
+      "identifier": 299
+    },
+    {
+      "identifier": 300
+    },
+    {
+      "identifier": 301
+    },
+    {
+      "identifier": 302
+    },
+    {
+      "identifier": 304
+    },
+    {
+      "identifier": 305
+    },
+    {
+      "identifier": 306
+    },
+    {
+      "identifier": 307
+    },
+    {
+      "identifier": 308
+    },
+    {
+      "identifier": 309
+    },
+    {
+      "identifier": 310
+    },
+    {
+      "identifier": 311
+    },
+    {
+      "identifier": 312
+    },
+    {
+      "identifier": 313
+    },
+    {
+      "identifier": 314
+    },
+    {
+      "identifier": 315
+    },
+    {
+      "identifier": 316
+    },
+    {
+      "identifier": 317
+    },
+    {
+      "identifier": 318
+    },
+    {
+      "identifier": 319
+    },
+    {
+      "identifier": 320
+    },
+    {
+      "identifier": 321
+    },
+    {
+      "identifier": 322
+    },
+    {
+      "identifier": 323
+    },
+    {
+      "identifier": 324
+    },
+    {
+      "identifier": 325
+    },
+    {
+      "identifier": 326
+    },
+    {
+      "identifier": 327
+    },
+    {
+      "identifier": 328
+    },
+    {
+      "identifier": 329
+    },
+    {
+      "identifier": 330
+    },
+    {
+      "identifier": 331
+    },
+    {
+      "identifier": 332
+    },
+    {
+      "identifier": 333
+    },
+    {
+      "identifier": 334
+    },
+    {
+      "identifier": 335
+    },
+    {
+      "identifier": 336
+    },
+    {
+      "identifier": 337
+    },
+    {
+      "identifier": 338
+    },
+    {
+      "identifier": 339
+    },
+    {
+      "identifier": 340
+    },
+    {
+      "identifier": 341
+    },
+    {
+      "identifier": 342
+    },
+    {
+      "identifier": 343
+    },
+    {
+      "identifier": 344
+    },
+    {
+      "identifier": 345
+    },
+    {
+      "identifier": 346
+    },
+    {
+      "identifier": 347
+    },
+    {
+      "identifier": 348
+    },
+    {
+      "identifier": 350
+    },
+    {
+      "identifier": 351
+    },
+    {
+      "identifier": 352
+    },
+    {
+      "identifier": 353
+    },
+    {
+      "identifier": 354
+    },
+    {
+      "identifier": 355
+    },
+    {
+      "identifier": 356
+    },
+    {
+      "identifier": 357
+    },
+    {
+      "identifier": 358
+    },
+    {
+      "identifier": 359
+    },
+    {
+      "identifier": 360
+    },
+    {
+      "identifier": 361
+    },
+    {
+      "identifier": 362
+    },
+    {
+      "identifier": 363
+    },
+    {
+      "identifier": 364
+    },
+    {
+      "identifier": 365
+    },
+    {
+      "identifier": 366
+    },
+    {
+      "identifier": 372
+    },
+    {
+      "identifier": 373
+    },
+    {
+      "identifier": 374
+    },
+    {
+      "identifier": 375
+    },
+    {
+      "identifier": 376
+    },
+    {
+      "identifier": 377
+    },
+    {
+      "identifier": 378
+    },
+    {
+      "identifier": 379
+    },
+    {
+      "identifier": 380
+    },
+    {
+      "identifier": 381
+    },
+    {
+      "identifier": 382
+    },
+    {
+      "identifier": 383
+    },
+    {
+      "identifier": 384
+    },
+    {
+      "identifier": 385
+    },
+    {
+      "identifier": 386
+    },
+    {
+      "identifier": 387
+    },
+    {
+      "identifier": 388
+    },
+    {
+      "identifier": 389
+    },
+    {
+      "identifier": 390
+    },
+    {
+      "identifier": 391
+    },
+    {
+      "identifier": 392
+    },
+    {
+      "identifier": 393
+    },
+    {
+      "identifier": 394
+    },
+    {
+      "identifier": 395
+    },
+    {
+      "identifier": 396
+    },
+    {
+      "identifier": 399
+    },
+    {
+      "identifier": 400
+    },
+    {
+      "identifier": 401
+    },
+    {
+      "identifier": 402
+    },
+    {
+      "identifier": 403
+    },
+    {
+      "identifier": 404
+    },
+    {
+      "identifier": 405
+    },
+    {
+      "identifier": 407
+    },
+    {
+      "identifier": 408
+    },
+    {
+      "identifier": 409
+    },
+    {
+      "identifier": 410
+    },
+    {
+      "identifier": 412
+    },
+    {
+      "identifier": 413
+    },
+    {
+      "identifier": 415
+    },
+    {
+      "identifier": 416
+    },
+    {
+      "identifier": 419
+    },
+    {
+      "identifier": 421
+    },
+    {
+      "identifier": 422
+    },
+    {
+      "identifier": 423
+    },
+    {
+      "identifier": 426
+    },
+    {
+      "identifier": 427
+    },
+    {
+      "identifier": 428
+    },
+    {
+      "identifier": 429
+    },
+    {
+      "identifier": 430
+    },
+    {
+      "identifier": 431
+    },
+    {
+      "identifier": 433
+    },
+    {
+      "identifier": 434
+    },
+    {
+      "identifier": 435
+    },
+    {
+      "identifier": 436
+    },
+    {
+      "identifier": 437
+    },
+    {
+      "identifier": 438
+    },
+    {
+      "identifier": 439
+    },
+    {
+      "identifier": 440
+    },
+    {
+      "identifier": 441
+    },
+    {
+      "identifier": 442
+    },
+    {
+      "identifier": 443
+    },
+    {
+      "identifier": 444
+    },
+    {
+      "identifier": 445
+    },
+    {
+      "identifier": 446
+    },
+    {
+      "identifier": 447
+    },
+    {
+      "identifier": 448
+    },
+    {
+      "identifier": 449
+    },
+    {
+      "identifier": 450
+    },
+    {
+      "identifier": 452
+    },
+    {
+      "identifier": 453
+    },
+    {
+      "identifier": 454
+    },
+    {
+      "identifier": 455
+    },
+    {
+      "identifier": 456
+    },
+    {
+      "identifier": 457
+    },
+    {
+      "identifier": 459
+    },
+    {
+      "identifier": 460
+    },
+    {
+      "identifier": 461
+    },
+    {
+      "identifier": 462
+    },
+    {
+      "identifier": 463
+    },
+    {
+      "identifier": 464
+    },
+    {
+      "identifier": 465
+    },
+    {
+      "identifier": 466
+    },
+    {
+      "identifier": 468
+    },
+    {
+      "identifier": 469
+    },
+    {
+      "identifier": 471
+    },
+    {
+      "identifier": 472
+    },
+    {
+      "identifier": 473
+    },
+    {
+      "identifier": 474
+    },
+    {
+      "identifier": 475
+    },
+    {
+      "identifier": 476
+    },
+    {
+      "identifier": 477
+    },
+    {
+      "identifier": 478
+    },
+    {
+      "identifier": 479
+    },
+    {
+      "identifier": 480
+    },
+    {
+      "identifier": 481
+    },
+    {
+      "identifier": 482
+    },
+    {
+      "identifier": 483
+    },
+    {
+      "identifier": 484
+    },
+    {
+      "identifier": 485
+    },
+    {
+      "identifier": 486
+    },
+    {
+      "identifier": 487
+    },
+    {
+      "identifier": 488
+    },
+    {
+      "identifier": 489
+    },
+    {
+      "identifier": 494
+    },
+    {
+      "identifier": 495
+    },
+    {
+      "identifier": 496
+    },
+    {
+      "identifier": 498
+    },
+    {
+      "identifier": 499
+    },
+    {
+      "identifier": 500
+    },
+    {
+      "identifier": 501
+    },
+    {
+      "identifier": 502
+    },
+    {
+      "identifier": 505
+    },
+    {
+      "identifier": 506
+    },
+    {
+      "identifier": 507
+    },
+    {
+      "identifier": 508
+    },
+    {
+      "identifier": 509
+    },
+    {
+      "identifier": 510
+    },
+    {
+      "identifier": 511
+    },
+    {
+      "identifier": 512
+    },
+    {
+      "identifier": 513
+    },
+    {
+      "identifier": 514
+    },
+    {
+      "identifier": 515
+    },
+    {
+      "identifier": 516
+    },
+    {
+      "identifier": 517
+    },
+    {
+      "identifier": 518
+    },
+    {
+      "identifier": 519
+    },
+    {
+      "identifier": 520
+    },
+    {
+      "identifier": 521
+    },
+    {
+      "identifier": 522
+    },
+    {
+      "identifier": 523
+    },
+    {
+      "identifier": 524
+    },
+    {
+      "identifier": 525
+    },
+    {
+      "identifier": 526
+    },
+    {
+      "identifier": 527
+    },
+    {
+      "identifier": 528
+    },
+    {
+      "identifier": 529
+    },
+    {
+      "identifier": 530
+    },
+    {
+      "identifier": 532
+    },
+    {
+      "identifier": 533
+    },
+    {
+      "identifier": 534
+    },
+    {
+      "identifier": 535
+    },
+    {
+      "identifier": 536
+    },
+    {
+      "identifier": 537
+    },
+    {
+      "identifier": 538
+    },
+    {
+      "identifier": 539
+    },
+    {
+      "identifier": 540
+    },
+    {
+      "identifier": 541
+    },
+    {
+      "identifier": 542
+    },
+    {
+      "identifier": 543
+    },
+    {
+      "identifier": 544
+    },
+    {
+      "identifier": 545
+    },
+    {
+      "identifier": 546
+    },
+    {
+      "identifier": 547
+    },
+    {
+      "identifier": 548
+    },
+    {
+      "identifier": 549
+    },
+    {
+      "identifier": 550
+    },
+    {
+      "identifier": 551
+    },
+    {
+      "identifier": 553
+    },
+    {
+      "identifier": 554
+    },
+    {
+      "identifier": 555
+    },
+    {
+      "identifier": 556
+    },
+    {
+      "identifier": 557
+    },
+    {
+      "identifier": 558
+    },
+    {
+      "identifier": 559
+    },
+    {
+      "identifier": 560
+    },
+    {
+      "identifier": 561
+    },
+    {
+      "identifier": 562
+    },
+    {
+      "identifier": 566
+    },
+    {
+      "identifier": 567
+    },
+    {
+      "identifier": 570
+    },
+    {
+      "identifier": 571
+    },
+    {
+      "identifier": 573
+    },
+    {
+      "identifier": 574
+    },
+    {
+      "identifier": 575
+    },
+    {
+      "identifier": 576
+    },
+    {
+      "identifier": 577
+    },
+    {
+      "identifier": 578
+    },
+    {
+      "identifier": 579
+    },
+    {
+      "identifier": 580
+    },
+    {
+      "identifier": 581
+    },
+    {
+      "identifier": 582
+    },
+    {
+      "identifier": 583
+    },
+    {
+      "identifier": 584
+    },
+    {
+      "identifier": 585
+    },
+    {
+      "identifier": 586
+    },
+    {
+      "identifier": 587
+    },
+    {
+      "identifier": 589
+    },
+    {
+      "identifier": 590
+    },
+    {
+      "identifier": 591
+    },
+    {
+      "identifier": 592
+    }
+  ],
+  "tracks": [
+    {
+      "measurement_ids": [
+        10,
+        80,
+        132
+      ],
+      "pval": 0.10135716199874878
+    },
+    {
+      "measurement_ids": [
+        93,
+        143,
+        145,
+        196,
+        267,
+        309,
+        356,
+        429,
+        428
+      ],
+      "pval": 0.6694738864898682
+    },
+    {
+      "measurement_ids": [
+        91,
+        93,
+        143,
+        145,
+        196,
+        267,
+        309,
+        356,
+        429,
+        428
+      ],
+      "pval": 0.7554363012313843
+    },
+    {
+      "measurement_ids": [
+        78,
+        130,
+        179,
+        249,
+        301,
+        347,
+        395,
+        486,
+        487,
+        562,
+        561
+      ],
+      "pval": 0.9936584830284119
+    },
+    {
+      "measurement_ids": [
+        84,
+        135,
+        187,
+        255,
+        306,
+        305,
+        351,
+        350,
+        399,
+        494,
+        495
+      ],
+      "pval": 0.0024918257258832455
+    },
+    {
+      "measurement_ids": [
+        12,
+        83,
+        134,
+        253,
+        215,
+        212,
+        208,
+        205,
+        408,
+        407
+      ],
+      "pval": 0.01031325664371252
+    },
+    {
+      "measurement_ids": [
+        86,
+        137,
+        189,
+        257,
+        308,
+        353,
+        401,
+        502,
+        505,
+        577,
+        578
+      ],
+      "pval": 0.7337077856063843
+    },
+    {
+      "measurement_ids": [
+        90,
+        141,
+        142,
+        193,
+        195,
+        266,
+        313,
+        358,
+        404,
+        508,
+        509
+      ],
+      "pval": 0.8328490257263184
+    },
+    {
+      "measurement_ids": [
+        51,
+        100,
+        149,
+        220,
+        272,
+        359,
+        361,
+        510,
+        511,
+        581,
+        582
+      ],
+      "pval": 0.22240909934043884
+    },
+    {
+      "measurement_ids": [
+        52,
+        106,
+        155,
+        222,
+        277,
+        273,
+        320,
+        316,
+        360,
+        435,
+        436
+      ],
+      "pval": 0.9507262706756592
+    },
+    {
+      "measurement_ids": [
+        26,
+        91,
+        93,
+        143,
+        145,
+        196,
+        267,
+        309,
+        356,
+        429,
+        428
+      ],
+      "pval": 0.8390217423439026
+    },
+    {
+      "measurement_ids": [
+        57,
+        107,
+        157,
+        227,
+        279,
+        325,
+        374,
+        452,
+        453,
+        526,
+        527
+      ],
+      "pval": 0.097749263048172
+    },
+    {
+      "measurement_ids": [
+        55,
+        110,
+        156,
+        230,
+        280,
+        330,
+        328,
+        377,
+        584,
+        583,
+        587
+      ],
+      "pval": 0.8142720460891724
+    },
+    {
+      "measurement_ids": [
+        65,
+        119,
+        168,
+        238,
+        289,
+        337,
+        405,
+        590,
+        589,
+        592,
+        591
+      ],
+      "pval": 0.7590605020523071
+    },
+    {
+      "measurement_ids": [
+        71,
+        124,
+        174,
+        242,
+        294,
+        292,
+        340,
+        385,
+        472,
+        473,
+        544,
+        545
+      ],
+      "pval": 0.27751806378364563
+    },
+    {
+      "measurement_ids": [
+        67,
+        127,
+        176,
+        246,
+        300,
+        297,
+        346,
+        394,
+        484,
+        485,
+        559,
+        560
+      ],
+      "pval": 0.38533228635787964
+    },
+    {
+      "measurement_ids": [
+        74,
+        128,
+        177,
+        248,
+        245,
+        299,
+        345,
+        390,
+        480,
+        481,
+        553,
+        554
+      ],
+      "pval": 0.8720559477806091
+    },
+    {
+      "measurement_ids": [
+        72,
+        78,
+        130,
+        179,
+        249,
+        301,
+        347,
+        395,
+        486,
+        487,
+        562,
+        561
+      ],
+      "pval": 0.9984754323959351
+    },
+    {
+      "measurement_ids": [
+        13,
+        84,
+        135,
+        187,
+        255,
+        306,
+        305,
+        351,
+        350,
+        399,
+        494,
+        495
+      ],
+      "pval": 0.011443166993558407
+    },
+    {
+      "measurement_ids": [
+        20,
+        86,
+        137,
+        189,
+        257,
+        308,
+        353,
+        401,
+        502,
+        505,
+        577,
+        578
+      ],
+      "pval": 0.8606142997741699
+    },
+    {
+      "measurement_ids": [
+        87,
+        138,
+        190,
+        265,
+        262,
+        312,
+        357,
+        403,
+        506,
+        507,
+        579,
+        580
+      ],
+      "pval": 0.017291834577918053
+    },
+    {
+      "measurement_ids": [
+        88,
+        139,
+        191,
+        264,
+        311,
+        354,
+        218,
+        214,
+        422,
+        423,
+        421,
+        419
+      ],
+      "pval": 0.08688806742429733
+    },
+    {
+      "measurement_ids": [
+        89,
+        140,
+        192,
+        194,
+        263,
+        310,
+        355,
+        402,
+        500,
+        501,
+        575,
+        576
+      ],
+      "pval": 0.7769104838371277
+    },
+    {
+      "measurement_ids": [
+        24,
+        90,
+        141,
+        142,
+        193,
+        195,
+        266,
+        313,
+        358,
+        404,
+        508,
+        509
+      ],
+      "pval": 0.809900164604187
+    },
+    {
+      "measurement_ids": [
+        1,
+        51,
+        100,
+        149,
+        220,
+        272,
+        359,
+        361,
+        510,
+        511,
+        581,
+        582
+      ],
+      "pval": 0.2827458381652832
+    },
+    {
+      "measurement_ids": [
+        2,
+        52,
+        106,
+        155,
+        222,
+        277,
+        273,
+        320,
+        316,
+        360,
+        435,
+        436
+      ],
+      "pval": 0.8803244233131409
+    },
+    {
+      "measurement_ids": [
+        96,
+        101,
+        102,
+        152,
+        271,
+        274,
+        319,
+        364,
+        439,
+        440,
+        520,
+        521
+      ],
+      "pval": 0.0007331029046326876
+    },
+    {
+      "measurement_ids": [
+        98,
+        103,
+        105,
+        153,
+        223,
+        275,
+        321,
+        365,
+        441,
+        442,
+        522,
+        523
+      ],
+      "pval": 0.5980386734008789
+    },
+    {
+      "measurement_ids": [
+        34,
+        55,
+        110,
+        156,
+        230,
+        280,
+        330,
+        328,
+        377,
+        584,
+        583,
+        587
+      ],
+      "pval": 0.5394612550735474
+    },
+    {
+      "measurement_ids": [
+        53,
+        57,
+        107,
+        157,
+        227,
+        279,
+        325,
+        374,
+        452,
+        453,
+        526,
+        527
+      ],
+      "pval": 0.15083737671375275
+    },
+    {
+      "measurement_ids": [
+        59,
+        108,
+        113,
+        159,
+        228,
+        281,
+        329,
+        378,
+        464,
+        465,
+        536,
+        537
+      ],
+      "pval": 0.9478137493133545
+    },
+    {
+      "measurement_ids": [
+        56,
+        111,
+        161,
+        231,
+        283,
+        334,
+        382,
+        462,
+        463,
+        434,
+        433
+      ],
+      "pval": 0.3691135346889496
+    },
+    {
+      "measurement_ids": [
+        43,
+        63,
+        117,
+        166,
+        236,
+        288,
+        336,
+        383,
+        471,
+        540,
+        541
+      ],
+      "pval": 0.9067832827568054
+    },
+    {
+      "measurement_ids": [
+        61,
+        115,
+        163,
+        233,
+        285,
+        332,
+        376,
+        456,
+        457,
+        532,
+        533,
+        530
+      ],
+      "pval": 0.06005706265568733
+    },
+    {
+      "measurement_ids": [
+        42,
+        65,
+        119,
+        168,
+        238,
+        289,
+        337,
+        405,
+        590,
+        589,
+        592,
+        591
+      ],
+      "pval": 0.7975004315376282
+    },
+    {
+      "measurement_ids": [
+        70,
+        120,
+        123,
+        173,
+        241,
+        296,
+        343,
+        393,
+        391,
+        482,
+        483,
+        557,
+        558
+      ],
+      "pval": 0.7482857704162598
+    },
+    {
+      "measurement_ids": [
+        49,
+        71,
+        124,
+        174,
+        242,
+        294,
+        292,
+        340,
+        385,
+        472,
+        473,
+        544,
+        545
+      ],
+      "pval": 0.38841477036476135
+    },
+    {
+      "measurement_ids": [
+        69,
+        122,
+        171,
+        175,
+        243,
+        295,
+        341,
+        388,
+        386,
+        476,
+        477,
+        546,
+        547
+      ],
+      "pval": 0.3945515751838684
+    },
+    {
+      "measurement_ids": [
+        45,
+        67,
+        127,
+        176,
+        246,
+        300,
+        297,
+        346,
+        394,
+        484,
+        485,
+        559,
+        560
+      ],
+      "pval": 0.14727884531021118
+    },
+    {
+      "measurement_ids": [
+        8,
+        74,
+        128,
+        177,
+        248,
+        245,
+        299,
+        345,
+        390,
+        480,
+        481,
+        553,
+        554
+      ],
+      "pval": 0.908862829208374
+    },
+    {
+      "measurement_ids": [
+        6,
+        72,
+        78,
+        130,
+        179,
+        249,
+        301,
+        347,
+        395,
+        486,
+        487,
+        562,
+        561
+      ],
+      "pval": 0.9961327910423279
+    },
+    {
+      "measurement_ids": [
+        79,
+        131,
+        180,
+        250,
+        302,
+        348,
+        396,
+        488,
+        489,
+        570,
+        571,
+        566,
+        567
+      ],
+      "pval": 0.9689175486564636
+    },
+    {
+      "measurement_ids": [
+        85,
+        136,
+        188,
+        256,
+        254,
+        307,
+        352,
+        400,
+        499,
+        496,
+        498,
+        573,
+        574
+      ],
+      "pval": 0.6341598033905029
+    },
+    {
+      "measurement_ids": [
+        18,
+        87,
+        138,
+        190,
+        265,
+        262,
+        312,
+        357,
+        403,
+        506,
+        507,
+        579,
+        580
+      ],
+      "pval": 0.025476641952991486
+    },
+    {
+      "measurement_ids": [
+        22,
+        88,
+        139,
+        191,
+        264,
+        311,
+        354,
+        218,
+        214,
+        422,
+        423,
+        421,
+        419
+      ],
+      "pval": 0.14630627632141113
+    },
+    {
+      "measurement_ids": [
+        23,
+        89,
+        140,
+        192,
+        194,
+        263,
+        310,
+        355,
+        402,
+        500,
+        501,
+        575,
+        576
+      ],
+      "pval": 0.7594557404518127
+    },
+    {
+      "measurement_ids": [
+        5,
+        77,
+        126,
+        170,
+        239,
+        290,
+        326,
+        447,
+        448,
+        437,
+        438,
+        515,
+        516
+      ],
+      "pval": 0.32289862632751465
+    },
+    {
+      "measurement_ids": [
+        77,
+        126,
+        170,
+        239,
+        290,
+        326,
+        372,
+        447,
+        448,
+        437,
+        438,
+        515,
+        516
+      ],
+      "pval": 0.5397776365280151
+    },
+    {
+      "measurement_ids": [
+        95,
+        147,
+        148,
+        150,
+        151,
+        270,
+        315,
+        318,
+        219,
+        431,
+        430,
+        427,
+        426
+      ],
+      "pval": 0.8816311359405518
+    },
+    {
+      "measurement_ids": [
+        28,
+        96,
+        101,
+        102,
+        152,
+        271,
+        274,
+        319,
+        364,
+        439,
+        440,
+        520,
+        521
+      ],
+      "pval": 0.0010871547274291515
+    },
+    {
+      "measurement_ids": [
+        97,
+        98,
+        103,
+        105,
+        153,
+        223,
+        275,
+        321,
+        365,
+        441,
+        442,
+        522,
+        523
+      ],
+      "pval": 0.6653728485107422
+    },
+    {
+      "measurement_ids": [
+        99,
+        104,
+        154,
+        225,
+        224,
+        276,
+        323,
+        322,
+        366,
+        443,
+        444,
+        524,
+        525
+      ],
+      "pval": 0.30694112181663513
+    },
+    {
+      "measurement_ids": [
+        32,
+        53,
+        57,
+        107,
+        157,
+        227,
+        279,
+        325,
+        374,
+        452,
+        453,
+        526,
+        527
+      ],
+      "pval": 0.29952874779701233
+    },
+    {
+      "measurement_ids": [
+        54,
+        59,
+        108,
+        113,
+        159,
+        228,
+        281,
+        329,
+        378,
+        464,
+        465,
+        536,
+        537
+      ],
+      "pval": 0.9312563538551331
+    },
+    {
+      "measurement_ids": [
+        37,
+        56,
+        111,
+        161,
+        231,
+        283,
+        334,
+        382,
+        462,
+        463,
+        434,
+        433
+      ],
+      "pval": 0.451684832572937
+    },
+    {
+      "measurement_ids": [
+        58,
+        112,
+        162,
+        232,
+        284,
+        282,
+        331,
+        380,
+        468,
+        469,
+        466,
+        538,
+        539
+      ],
+      "pval": 0.9990084767341614
+    },
+    {
+      "measurement_ids": [
+        40,
+        61,
+        115,
+        163,
+        233,
+        285,
+        332,
+        376,
+        456,
+        457,
+        532,
+        533,
+        530
+      ],
+      "pval": 0.06499411165714264
+    },
+    {
+      "measurement_ids": [
+        62,
+        116,
+        164,
+        167,
+        237,
+        234,
+        286,
+        333,
+        379,
+        460,
+        461,
+        585,
+        586
+      ],
+      "pval": 0.006420136895030737
+    },
+    {
+      "measurement_ids": [
+        44,
+        64,
+        118,
+        165,
+        169,
+        235,
+        287,
+        335,
+        381,
+        459,
+        534,
+        535
+      ],
+      "pval": 0.025440344586968422
+    },
+    {
+      "measurement_ids": [
+        66,
+        70,
+        120,
+        123,
+        173,
+        241,
+        296,
+        343,
+        393,
+        391,
+        482,
+        483,
+        557,
+        558
+      ],
+      "pval": 0.7942361235618591
+    },
+    {
+      "measurement_ids": [
+        47,
+        69,
+        122,
+        171,
+        175,
+        243,
+        295,
+        341,
+        388,
+        386,
+        476,
+        477,
+        546,
+        547
+      ],
+      "pval": 0.4993138313293457
+    },
+    {
+      "measurement_ids": [
+        75,
+        129,
+        178,
+        247,
+        298,
+        344,
+        392,
+        389,
+        478,
+        479,
+        555,
+        556,
+        550,
+        551
+      ],
+      "pval": 0.3417592942714691
+    },
+    {
+      "measurement_ids": [
+        73,
+        79,
+        131,
+        180,
+        250,
+        302,
+        348,
+        396,
+        488,
+        489,
+        570,
+        571,
+        566,
+        567
+      ],
+      "pval": 0.9716321229934692
+    },
+    {
+      "measurement_ids": [
+        15,
+        85,
+        136,
+        188,
+        256,
+        254,
+        307,
+        352,
+        400,
+        499,
+        496,
+        498,
+        573,
+        574
+      ],
+      "pval": 0.6593300104141235
+    },
+    {
+      "measurement_ids": [
+        76,
+        125,
+        183,
+        240,
+        291,
+        338,
+        327,
+        375,
+        445,
+        446,
+        518,
+        519,
+        513,
+        514
+      ],
+      "pval": 0.31843629479408264
+    },
+    {
+      "measurement_ids": [
+        92,
+        144,
+        146,
+        197,
+        198,
+        269,
+        268,
+        314,
+        317,
+        363,
+        362,
+        512,
+        517
+      ],
+      "pval": 0.8739227652549744
+    },
+    {
+      "measurement_ids": [
+        94,
+        95,
+        147,
+        148,
+        150,
+        151,
+        270,
+        315,
+        318,
+        219,
+        431,
+        430,
+        427,
+        426
+      ],
+      "pval": 0.9378896951675415
+    },
+    {
+      "measurement_ids": [
+        29,
+        97,
+        98,
+        103,
+        105,
+        153,
+        223,
+        275,
+        321,
+        365,
+        441,
+        442,
+        522,
+        523
+      ],
+      "pval": 0.3307439088821411
+    },
+    {
+      "measurement_ids": [
+        30,
+        99,
+        104,
+        154,
+        225,
+        224,
+        276,
+        323,
+        322,
+        366,
+        443,
+        444,
+        524,
+        525
+      ],
+      "pval": 0.4310273230075836
+    },
+    {
+      "measurement_ids": [
+        36,
+        54,
+        59,
+        108,
+        113,
+        159,
+        228,
+        281,
+        329,
+        378,
+        464,
+        465,
+        536,
+        537
+      ],
+      "pval": 0.9556344747543335
+    },
+    {
+      "measurement_ids": [
+        39,
+        62,
+        116,
+        164,
+        167,
+        237,
+        234,
+        286,
+        333,
+        379,
+        460,
+        461,
+        585,
+        586
+      ],
+      "pval": 0.013292619027197361
+    },
+    {
+      "measurement_ids": [
+        48,
+        66,
+        70,
+        120,
+        123,
+        173,
+        241,
+        296,
+        343,
+        393,
+        391,
+        482,
+        483,
+        557,
+        558
+      ],
+      "pval": 0.7522531151771545
+    },
+    {
+      "measurement_ids": [
+        68,
+        121,
+        172,
+        244,
+        293,
+        342,
+        339,
+        387,
+        384,
+        474,
+        475,
+        548,
+        549,
+        542,
+        543
+      ],
+      "pval": 0.985611081123352
+    },
+    {
+      "measurement_ids": [
+        9,
+        75,
+        129,
+        178,
+        247,
+        298,
+        344,
+        392,
+        389,
+        478,
+        479,
+        555,
+        556,
+        550,
+        551
+      ],
+      "pval": 0.10187006741762161
+    },
+    {
+      "measurement_ids": [
+        7,
+        73,
+        79,
+        131,
+        180,
+        250,
+        302,
+        348,
+        396,
+        488,
+        489,
+        570,
+        571,
+        566,
+        567
+      ],
+      "pval": 0.9842824935913086
+    },
+    {
+      "measurement_ids": [
+        11,
+        81,
+        82,
+        133,
+        252,
+        304,
+        217,
+        211,
+        209,
+        416,
+        415,
+        413,
+        412,
+        409,
+        410
+      ],
+      "pval": 0.7139747738838196
+    },
+    {
+      "measurement_ids": [
+        4,
+        76,
+        125,
+        183,
+        240,
+        291,
+        338,
+        327,
+        375,
+        445,
+        446,
+        518,
+        519,
+        513,
+        514
+      ],
+      "pval": 0.3805059790611267
+    },
+    {
+      "measurement_ids": [
+        25,
+        92,
+        144,
+        146,
+        197,
+        198,
+        269,
+        268,
+        314,
+        317,
+        363,
+        362,
+        512,
+        517
+      ],
+      "pval": 0.4134359657764435
+    },
+    {
+      "measurement_ids": [
+        27,
+        94,
+        95,
+        147,
+        148,
+        150,
+        151,
+        270,
+        315,
+        318,
+        219,
+        431,
+        430,
+        427,
+        426
+      ],
+      "pval": 0.9680560827255249
+    },
+    {
+      "measurement_ids": [
+        60,
+        109,
+        114,
+        158,
+        160,
+        226,
+        278,
+        324,
+        373,
+        454,
+        455,
+        449,
+        450,
+        528,
+        529
+      ],
+      "pval": 0.005793622694909573
+    },
+    {
+      "measurement_ids": [
+        33,
+        38,
+        58,
+        112,
+        162,
+        232,
+        284,
+        282,
+        331,
+        380,
+        468,
+        469,
+        466,
+        538,
+        539
+      ],
+      "pval": 0.9999380707740784
+    },
+    {
+      "measurement_ids": [
+        46,
+        68,
+        121,
+        172,
+        244,
+        293,
+        342,
+        339,
+        387,
+        384,
+        474,
+        475,
+        548,
+        549,
+        542,
+        543
+      ],
+      "pval": 0.9943258762359619
+    },
+    {
+      "measurement_ids": [
+        35,
+        60,
+        109,
+        114,
+        158,
+        160,
+        226,
+        278,
+        324,
+        373,
+        454,
+        455,
+        449,
+        450,
+        528,
+        529
+      ],
+      "pval": 0.010670176707208157
+    }
+  ]
+}

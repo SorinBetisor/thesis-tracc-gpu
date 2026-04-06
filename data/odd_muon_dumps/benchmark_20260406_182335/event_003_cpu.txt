@@ -1,0 +1,16 @@
+n_candidates=91 n_selected=40 n_removed=51
+time_ms_mean=0.360104 time_ms_std=0.00394505 time_ms_median=0.360549 time_ms_p95=0.367272
+events_per_sec=2776.97
+peak_memory_mb=12.75
+output_hash=4431414398113696129
+profile_filter_setup_ms=0.006853
+profile_unique_meas_ms=0.061847
+profile_inverted_index_ms=0.140564
+profile_shared_count_ms=0.024246
+profile_initial_sort_ms=0.008356
+profile_eviction_loop_ms=0.120487
+profile_output_copy_ms=0.014948
+profile_eviction_iterations=51
+profile_eviction_shared_updates=464
+profile_unique_meas_count=530
+profile_hash_match=true

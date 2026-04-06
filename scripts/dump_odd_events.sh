@@ -65,8 +65,6 @@ echo ""
 SUMMARY_FILE="$OUTDIR/dump_summary.txt"
 echo "event_idx n_candidates" > "$SUMMARY_FILE"
 
-export TRACCC_TEST_DATA_DIR="$DATA_DIR"
-
 for (( i=0; i<N_EVENTS; i++ )); do
     EVENT_IDX=$(( SKIP_START + i ))
     DUMP_PATH="$OUTDIR/event_$(printf '%03d' $EVENT_IDX).json"
@@ -74,18 +72,38 @@ for (( i=0; i<N_EVENTS; i++ )); do
 
     printf "Event %3d -> %s\n" "$EVENT_IDX" "$(basename $DUMP_PATH)"
 
-    # Note: --use-acts-geom-source is intentionally omitted; it causes a
-    # segfault in Acts::from_json for this geometry + Spack Acts combination.
-    "$SEQ_BIN" \
-        --detector-file=geometries/odd/odd-detray_geometry_detray.json \
-        --material-file=geometries/odd/odd-detray_material_detray.json \
-        --grid-file=geometries/odd/odd-detray_surface_grids_detray.json \
-        --digitization-file=geometries/odd/odd-digi-geometric-config.json \
-        --input-directory=odd/geant4_10muon_1GeV/ \
-        --skip="$EVENT_IDX" \
-        --input-events=1 \
-        --dump-ambiguity-input="$DUMP_PATH" \
-        2>&1 | tee "$LOG_PATH" > /dev/null
+    # Retry up to 5 times — Acts::BinUtility segfault in this Spack+ODD
+    # combination is non-deterministic (ASLR-dependent heap layout); retrying
+    # in a fresh subshell succeeds reliably within 1-2 attempts.
+    # Note: --use-acts-geom-source is intentionally omitted (separate segfault).
+    MAX_TRIES=5
+    RC=1
+    for (( attempt=1; attempt<=MAX_TRIES; attempt++ )); do
+        if (
+            export TRACCC_TEST_DATA_DIR="$DATA_DIR"
+            "$SEQ_BIN" \
+                --detector-file=geometries/odd/odd-detray_geometry_detray.json \
+                --material-file=geometries/odd/odd-detray_material_detray.json \
+                --grid-file=geometries/odd/odd-detray_surface_grids_detray.json \
+                --digitization-file=geometries/odd/odd-digi-geometric-config.json \
+                --input-directory=odd/geant4_10muon_1GeV/ \
+                --input-skip="$EVENT_IDX" \
+                --input-events=1 \
+                --dump-ambiguity-input="$DUMP_PATH" \
+                2>&1 | tee "$LOG_PATH" > /dev/null
+        ); then
+            RC=0
+            break
+        else
+            RC=$?
+            printf "  [attempt %d/%d crashed (rc=%d), retrying]\n" "$attempt" "$MAX_TRIES" "$RC"
+            rm -f "$DUMP_PATH"
+        fi
+    done
+    if [[ $RC -ne 0 ]]; then
+        echo "ERROR: event $EVENT_IDX failed after $MAX_TRIES attempts" >&2
+        exit 1
+    fi
 
     # Extract n_candidates from the dump JSON (top-level "n_tracks" or array length)
     N_CANDS="unknown"

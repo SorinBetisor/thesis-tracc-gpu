@@ -15,7 +15,7 @@ transfer_executable = False
 request_cpus   = 1
 request_memory = 4G
 request_gpus   = 1
-requirements   = (TARGET.GPUs > 0) && (CUDACapability >= 700)
+requirements   = (TARGET.GPUs > 0) && (TARGET.GPUs_Capability >= 7.0)
 
 log    = logs/gpu_dumps_$(ClusterId).log
 output = logs/gpu_dumps_$(ClusterId)_$(ProcId).out

@@ -1,0 +1,10 @@
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_000.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_001.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_002.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_003.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_004.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_005.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_006.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_007.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_008.json
+/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_009.json
