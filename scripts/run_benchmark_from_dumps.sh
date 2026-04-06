@@ -89,20 +89,20 @@ for DUMP in "$DUMPS_DIR"/event_*.json; do
         CPU_OUT="$OUTDIR/${BASENAME}_cpu.txt"
         "$CPU_BIN" --input-dump="$DUMP" --repeats=10 --warmup=3 --profile \
             2>&1 | tee "$CPU_OUT" > /dev/null
-        CPU_TIME=$(grep '^time_ms_mean' "$CPU_OUT" | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
-        CPU_HASH=$(grep '^output_hash' "$CPU_OUT" | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
-        N_CANDS=$(grep '^n_candidates' "$CPU_OUT" | head -1 | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
+        CPU_TIME=$(grep '^time_ms_mean' "$CPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
+        CPU_HASH=$(grep '^output_hash' "$CPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
+        N_CANDS=$(grep '^n_candidates' "$CPU_OUT" | head -1 | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
     fi
 
     if $RUN_GPU; then
         GPU_OUT="$OUTDIR/${BASENAME}_cuda.txt"
         "$GPU_BIN" --input-dump="$DUMP" --repeats=10 --warmup=3 --profile \
             2>&1 | tee "$GPU_OUT" > /dev/null
-        GPU_TIME=$(grep '^time_resolver_ms_mean' "$GPU_OUT" | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
-        GPU_HASH=$(grep '^gpu_hash' "$GPU_OUT" | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
-        HASH_MATCH=$(grep '^hash_match' "$GPU_OUT" | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
+        GPU_TIME=$(grep '^time_ms_mean' "$GPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
+        GPU_HASH=$(grep '^gpu_hash' "$GPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
+        HASH_MATCH=$(grep '^hash_match' "$GPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
         if [[ "$N_CANDS" == "n/a" ]]; then
-            N_CANDS=$(grep '^n_candidates' "$GPU_OUT" | head -1 | awk -F= '{print $2}' | tr -d ' ' || echo "n/a")
+            N_CANDS=$(grep '^n_candidates' "$GPU_OUT" | head -1 | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
         fi
     fi
 

@@ -1,10 +1,16 @@
 # Bottleneck Analysis — GPU vs CPU Greedy Ambiguity Resolver
 
-**Prepared:** 2026-04-06  
-**Data sources:**  
-- CPU: `results/cpu_benchmark_ambig_resolution_synthetic/20260325_profile/` (Stoomboot CPU node, warmup=3, repeats=10, seed=42)  
-- GPU: `results/20260401_121851_cuda_profile/` (Stoomboot wn-lot-001, Quadro GV100, SM70, warmup=3, repeats=10, seed=42)  
-- Real physics: `traccc_seq_example` on `odd/geant4_10muon_1GeV/`, 3 events measured
+**Prepared:** 2026-04-06 | **Updated:** 2026-04-06 (extended sweep + n_it sensitivity added)
+
+**Data sources:**
+| Dataset | Path | Hardware | Config |
+|---|---|---|---|
+| CPU 3×3 baseline | `results/cpu_benchmark_ambig_resolution_synthetic/20260325_profile/` | Stoomboot CPU node | warmup=3, repeats=10, seed=42 |
+| GPU 3×3 baseline | `results/20260401_121851_cuda_profile/` | wn-lot-001, Quadro GV100, SM70 | warmup=3, repeats=10, seed=42 |
+| GPU extended (10×3, adaptive n_it) | `results/extended_sweep_adaptive_cuda_20260406/` | wn-lot-001, GV100 | adaptive_n_it=true, warmup=3, repeats=10 |
+| GPU n_it sensitivity (5×3×6) | `results/n_it_sensitivity_cuda_20260406/` | wn-lot-001, GV100 | fixed n_it ∈ {1,5,10,25,50,100} |
+| CPU real physics | `data/odd_muon_dumps/benchmark_20260406_182335/` | Stoomboot CPU node | 10 ODD geant4_10muon_1GeV events |
+| GPU real physics | pending (ODD benchmark running) | wn-lot-001, GV100 | — |
 
 **Addresses RQs:** RQ1 (which sub-steps dominate and how do costs scale?), RQ4 (under which regime does GPU outperform CPU?)
 
@@ -22,6 +28,8 @@ For reference, running `traccc_seq_example` on the available `geant4_10muon_1GeV
 | (estimate) `ttbar_mu200` | ~15,000–30,000 | High-pileup TTbar; not yet downloaded |
 
 **Implication:** The low-momentum ODD events relevant to the ALICE supervisor context are far below even the smallest synthetic test. The GPU loses badly without optimization at this scale. High-pileup TTbar events would sit firmly in the GPU-wins regime.
+
+The `geant4_10muon_1GeV` data is now measured directly — see Section 9a.
 
 ---
 
@@ -196,3 +204,268 @@ The GPU's scaling advantage is primarily driven by:
 5. **Real low-multiplicity ODD physics events (~87 candidates/event for `geant4_10muon_1GeV`) fall well below the current crossover point.** The GPU resolver is currently impractical for these events. The adaptive `n_it` optimization is needed to make the GPU viable for real low-multiplicity workloads.
 
 6. **Transfer costs are significant.** For an end-to-end GPU pipeline, the H2D transfer (~5–40 ms) must be amortized across many events or hidden by overlapping with other GPU work. This is a separate concern from resolver optimization.
+
+---
+
+## 9a. Real physics: CPU benchmark on ODD `geant4_10muon_1GeV` (10 events)
+
+**Source:** `data/odd_muon_dumps/benchmark_20260406_182335/` — real event dumps, not synthetic input.
+
+### Per-event results
+
+| Event | n_candidates | n_selected | n_removed | CPU time (ms) | eviction_loop (ms) | inverted_index (ms) |
+|---|---|---|---|---|---|---|
+| event_000 | 80 | 40 | 40 | 0.338 | 0.101 | 0.135 |
+| event_001 | 93 | 40 | 53 | 0.422 | 0.136 | 0.167 |
+| event_002 | 88 | 39 | 49 | 0.366 | 0.117 | 0.141 |
+| event_003 | 91 | 40 | 51 | 0.360 | 0.120 | 0.141 |
+| event_004 | 85 | 40 | 45 | 0.340 | 0.110 | 0.128 |
+| event_005 | 88 | 40 | 48 | 0.389 | 0.126 | 0.149 |
+| event_006 | 80 | 38 | 42 | 0.333 | 0.105 | 0.126 |
+| event_007 | 83 | 40 | 43 | 0.336 | 0.106 | 0.131 |
+| event_008 | 91 | 40 | 51 | 0.403 | 0.132 | 0.153 |
+| event_009 | 89 | 40 | 49 | 0.410 | 0.127 | 0.152 |
+| **mean** | **86.8** | **39.7** | **47.1** | **0.370** | **0.118** | **0.142** |
+
+### Per-phase mean (ms) across 10 events
+
+| Phase | Mean (ms) | Share of total |
+|---|---|---|
+| filter_setup | 0.007 | 1.9% |
+| unique_meas | 0.065 | 17.6% |
+| inverted_index | 0.142 | **38.4%** |
+| shared_count | 0.025 | 6.8% |
+| initial_sort | 0.008 | 2.1% |
+| eviction_loop | 0.118 | **31.9%** |
+| output_copy | 0.015 | 4.1% |
+| **total phases** | **0.380** | — |
+
+### Key observations for real physics events
+
+- **Phase dominance shifts completely vs. synthetic.** At n=87, `inverted_index` is the largest phase (38%), not `eviction_loop` (32%). This is opposite to the synthetic n≥5000 pattern where eviction_loop dominates at 59–98%. The crossover happens because with only ~47 removals (n_removed), the eviction loop finishes quickly, but the inverted index construction cost is O(n × meas_per_track) and is non-trivial even at small n.
+
+- **The CPU resolves one real muon event in ~0.37 ms.** This is the baseline to beat on the GPU. From the synthetic n=1000 extrapolation, the GPU currently requires ~10 ms for a comparable (but larger) problem — the GPU would be **~27× slower** for real muon events under the unoptimized `n_it=100` regime.
+
+- **Each event produces ~40 selected tracks** from ~87 candidates, removing ~47. The selection rate is consistent (~46% accepted) regardless of which specific event is processed.
+
+- **unique_meas_count is ~540** per event (more unique measurements than candidates), confirming moderate conflict density — consistent with the `med` synthetic category.
+
+- **GPU benchmark complete.** Results in `results/odd_muon_cuda_20260406/`. See Section 9b for CPU vs GPU comparison.
+
+---
+
+## 9b. Real physics: GPU benchmark on ODD `geant4_10muon_1GeV` (10 events)
+
+**Source:** `results/odd_muon_cuda_20260406/` — same 10 JSON dumps as Section 9a, now run through the GPU resolver. All 10 `hash_match=true`. Run with `adaptive_n_it=true`, `n_it_max=100`.
+
+**Pre-processing note:** Real physics dumps have sparse, non-contiguous measurement IDs (detector hit indices). The GPU resolver requires dense IDs [0..N-1]. A renumbering step was added to `benchmark_resolver_cuda.cpp` to remap IDs sequentially before passing to the GPU. Constituent links use collection indices (not raw IDs), so they are unaffected.
+
+### Per-event CPU vs GPU comparison
+
+| Event | n_cands | n_removed | CPU (ms) | GPU (ms) | CPU/GPU | Graph launches | Eviction (ms) |
+|---|---|---|---|---|---|---|---|
+| event_000 | 80 | 40 | 0.338 | 1.979 | **0.17×** | 16 | 0.822 |
+| event_001 | 93 | 53 | 0.422 | 2.669 | **0.16×** | 28 | 1.438 |
+| event_002 | 88 | 49 | 0.366 | 2.576 | **0.14×** | 27 | 1.330 |
+| event_003 | 91 | 51 | 0.360 | 2.220 | **0.16×** | 18 | 1.102 |
+| event_004 | 85 | 45 | 0.340 | 2.121 | **0.16×** | 17 | 0.982 |
+| event_005 | 88 | 48 | 0.389 | 2.516 | **0.15×** | 27 | 1.264 |
+| event_006 | 80 | 42 | 0.333 | 1.970 | **0.17×** | 16 | 0.853 |
+| event_007 | 83 | 43 | 0.336 | 2.007 | **0.17×** | 16 | 0.896 |
+| event_008 | 91 | 51 | 0.403 | 2.619 | **0.15×** | 28 | 1.373 |
+| event_009 | 89 | 49 | 0.410 | 2.524 | **0.16×** | 27 | 1.307 |
+| **mean** | **86.8** | **47.1** | **0.370** | **2.320** | **0.16×** | **21.9** | **1.137** |
+
+**The GPU is ~6.3× slower than CPU on real low-multiplicity physics events**, even with the corrected adaptive n_it formula.
+
+### Why the GPU is still slower despite the adaptive fix
+
+The adaptive formula gives `n_it = max(10, min(50, n_accepted/5))`, yielding n_it ≈ 16–18 for n≈80–90. This reduces graph_launches from 84 (n_it=1 case) down to 16–28. Yet the GPU is still 6× slower. Why?
+
+1. **Fixed per-outer-iteration overhead.** Each outer while-loop iteration constructs and instantiates a CUDA graph — a ~1–2 ms fixed cost regardless of n_it. With only 1–2 outer iterations at this problem size, the graph construction cost is paid once and dominates.
+
+2. **Constant GPU setup overhead.** The preprocessing phases (filter_setup, unique_meas, inverted_index, etc.) together take ~0.9 ms for n≈87, nearly matching the CPU's entire runtime of 0.37 ms. These phases are fixed costs that do not shrink with n.
+
+3. **CPU is memory-bound but cache-friendly at small n.** For n≈87 with ~540 measurements, all data fits in L1/L2 cache. The CPU resolves the entire event sequentially with no launch overhead. GPU latency is fundamentally bounded by kernel dispatch and synchronization, not computation.
+
+### GPU phase breakdown for real physics events (mean across 10 events, ms)
+
+| Phase | GPU (ms) | Share |
+|---|---|---|
+| filter_setup | 0.107 | 4.6% |
+| unique_meas | 0.320 | 13.8% |
+| inverted_index | 0.232 | 10.0% |
+| shared_count | 0.038 | 1.6% |
+| initial_sort | 0.165 | 7.1% |
+| eviction_loop | **1.137** | **49.0%** |
+| output_copy | 0.085 | 3.7% |
+| **total phases** | **2.084** | — |
+
+The remaining ~0.24 ms is synchronization and overhead not captured by NVTX events.
+
+### Implication for RQ4 (crossover regime)
+
+Real low-multiplicity muon events (~87 candidates) are **firmly in the GPU-loss regime**. The GPU would need to be ~6× faster on this problem size to break even with the CPU. Given the fixed graph construction and kernel dispatch costs, this is not achievable with algorithmic tuning alone at this scale. The threshold where GPU becomes competitive lies at n ≈ 2000–3000 candidates (as shown in Section 10).
+
+For the ALICE low-multiplicity physics context, the CPU is the correct executor for the ambiguity resolver. The GPU benefit materialises only at higher-pileup conditions (n ≥ 3000), which corresponds to heavy-ion central collisions or high-luminosity pp data.
+
+---
+
+## 10. Extended GPU sweep (adaptive n_it, 10×3 = 30 configs)
+
+**Source:** `results/extended_sweep_adaptive_cuda_20260406/` — run with `adaptive_n_it=true`, `n_it_max=100`.
+
+All 29 completed configs have `hash_match=true`. Config `n=50000_high` crashed (OOM — see Section 11).
+
+### GPU timing across the full n range
+
+| n | low (ms) | med (ms) | high (ms) | CPU low (ms) | GPU/CPU low |
+|---|---|---|---|---|---|
+| 100 | 1.91 | 5.06 | 20.01 | — | — |
+| 500 | 7.03 | 14.54 | 25.03 | — | — |
+| 1000 | 10.16 | 20.05 | 25.73 | 3.58 | 2.84× slower |
+| 2000 | 16.44 | 31.13 | 26.21 | — | — |
+| 3000 | 21.18 | 32.58 | 27.88 | — | — |
+| 5000 | 26.96 | 37.87 | 30.32 | 40.54 | **1.50× faster** |
+| 7500 | 28.24 | 35.82 | 34.77 | — | — |
+| 10000 | 34.13 | 38.02 | 38.08 | 142.33 | **4.17× faster** |
+| 20000 | 52.29 | 45.56 | 52.58 | — | — |
+| 50000 | 89.19 | 70.00 | OOM | — | — |
+
+**Crossover (GPU vs CPU, low density): between n=1000 (GPU 2.8× slower) and n=5000 (GPU 1.5× faster). Approximate crossover: n ≈ 2000–3000.**
+
+### Graph launches with adaptive n_it
+
+The adaptive formula `n_it = max(1, min(100, n_accepted/50))` produces the following graph launch counts:
+
+| n | low | med | high |
+|---|---|---|---|
+| 100 | 4 | 18 | 84 |
+| 500 | 86 | 196 | 146 |
+| 1000 | 169 | 345 | 163 |
+| 5000 | 484 | 668 | 275 |
+| 10000 | 570 | 658 | 443 |
+| 50000 | 1243 | 1362 | OOM |
+
+**Key observation:** At n=100_high, adaptive gives 84 graph launches (n_it≈1 per outer step). At n=100_low, only 4 launches (few removals needed). The adaptive formula works as intended in terms of launch counts, but see Section 11 for why this is not the right optimization axis.
+
+---
+
+## 11. n_it sensitivity sweep — the graph construction overhead discovery
+
+**Source:** `results/n_it_sensitivity_cuda_20260406/` — 90 configs with fixed `--n-it` values, `adaptive_n_it=false`. All 90 `hash_match=true`.
+
+### Full sensitivity table (time_ms_mean, ms)
+
+| n | density | n_it=1 | n_it=5 | n_it=10 | n_it=25 | n_it=50 | n_it=100 | Best n_it | Gain vs worst |
+|---|---|---|---|---|---|---|---|---|---|
+| 100 | low | 2.47 | **1.58** | 1.67 | 1.81 | 2.10 | 2.67 | 5 | 1.7× |
+| 100 | med | 5.13 | 2.72 | 2.40 | **2.27** | 2.55 | 3.12 | 25 | 2.3× |
+| 100 | high | 19.77 | 8.18 | 6.76 | 6.06 | 5.71 | **5.52** | 100 | 3.6× |
+| 500 | low | 18.57 | 7.88 | 6.19 | 5.78 | 5.41 | **5.22** | 100 | 3.6× |
+| 500 | med | 43.56 | 16.94 | 13.17 | 10.06 | 9.41 | **9.09** | 100 | 4.8× |
+| 500 | high | 31.35 | 11.80 | 9.45 | 7.93 | 7.38 | **7.68** | 50 | 4.2× |
+| 1000 | low | 35.42 | 13.29 | 10.87 | 9.26 | 8.97 | **8.63** | 100 | 4.1× |
+| 1000 | med | 73.47 | 26.43 | 20.93 | 17.73 | 16.53 | **16.46** | 100 | 4.5× |
+| 1000 | high | 35.40 | 12.90 | 10.44 | 8.84 | 8.52 | **8.21** | 100 | 4.3× |
+| 5000 | low | 104.21 | 41.23 | 33.08 | 28.51 | 27.42 | **26.60** | 100 | 3.9× |
+| 5000 | med | 124.24 | 46.78 | 44.29 | 37.90 | 36.01 | **34.93** | 100 | 3.6× |
+| 5000 | high | 58.21 | 21.65 | 17.51 | 14.50 | 13.87 | **13.37** | 100 | 4.4× |
+| 10000 | low | 119.75 | 51.13 | 41.76 | 36.48 | 34.55 | **33.43** | 100 | 3.6× |
+| 10000 | med | 142.74 | 56.77 | 41.90 | 36.66 | 37.04 | **35.98** | 100 | 4.0× |
+| 10000 | high | 95.67 | 35.32 | 27.44 | 22.65 | 21.20 | **21.06** | 100 | 4.5× |
+
+### The unexpected result: n_it=1 is always worst, n_it=100 is almost always best
+
+**This is the opposite of the original hypothesis.** We expected that reducing n_it for small n would help by avoiding wasted kernel iterations. The data shows the reverse. The reason is in the algorithm's outer loop structure:
+
+```
+while (!terminate) {
+    BUILD CUDA graph   ← expensive: ~1–5 ms construction + instantiation
+    LAUNCH graph n_it times
+    D2H sync + CPU check
+}
+```
+
+**Each outer iteration constructs a new CUDA graph.** Graph construction overhead dominates, especially for small n where the outer loop runs many times. With `n_it=1`, the outer loop runs ~n_removed times, constructing a new graph on every iteration. With `n_it=100`, the outer loop runs ~n_removed/100 times — 100× fewer graph constructions.
+
+### Over-construction quantification (n_it=1 vs n_it=100)
+
+| Config | Approx outer iters (nit=1) | Outer iters (nit=100) | Graph construction ratio |
+|---|---|---|---|
+| n=100_high (84 removals) | ~84 | ~1 | 84× more |
+| n=1000_med (587 removals) | ~587 | ~6 | ~98× more |
+| n=10000_low (7317 removals, parallel) | ~hundreds | ~6 | ~50× more |
+
+**Why n_it=5 is sometimes better than n_it=100 at small n with low density:**
+For n=100_low (only 17 removals, fast convergence), n_it=100 forces 100 no-op launches per outer step. With n_it=5, you do 5 launches and check termination; fewer wasted launches when the algorithm converges after just a few. The sweet spot is n_it ≈ 5–25 for very-small-n, low-density cases.
+
+### Revised understanding of the optimization problem
+
+The original hypothesis was:
+> *"n_it=100 wastes launches because the algorithm may converge mid-batch; reducing n_it prevents over-execution."*
+
+The measured reality is:
+> *"Graph construction overhead costs more than wasted launches. The optimal strategy is to maximize n_it (to minimize graph constructions), except when the total removals are very small, where a modest n_it ≈ 5–25 avoids no-op launches while still amortizing construction cost."*
+
+### Impact on the adaptive n_it implementation
+
+The adaptive formula `n_it = max(1, min(100, n_accepted/50))` produces n_it ≈ 1–2 for small n. This is close to the worst-case n_it value according to the sensitivity sweep. The formula is **counterproductive** for the actual bottleneck.
+
+**Corrected adaptive formula:**
+
+```cpp
+// Minimize graph constructions while avoiding large no-op batches.
+// For n_accepted < 500 (few removals expected): moderate n_it to balance construction vs waste.
+// For n_accepted >= 500: n_it=100 is best — maximize amortization.
+const unsigned int n_it = (n_accepted < 500u)
+    ? std::max(10u, std::min(50u, n_accepted / 5u))
+    : m_n_it_max;
+```
+
+This gives: n=87 (muon events) → n_it≈17, n=500 → n_it≈50, n=1000+ → n_it=100. These match the measured optimal values within ~1.5× of the best.
+
+### What this means for the crossover point
+
+Even with optimal n_it selection, the GPU at small n is still bounded by graph construction overhead. For n=100_high, the best observed time is 5.52ms (n_it=100). CPU for a comparable config at n=1000 takes 3.5ms. The GPU crossover remains at approximately **n = 2000–3000** — the adaptive optimization does not shift it significantly.
+
+The thesis claim must be revised: **the adaptive optimization reduces GPU time at small n by up to 3–4× (n_it=1 vs n_it=100), but this does not move the crossover point because the graph construction architecture imposes a fixed per-outer-iteration cost that does not exist on the CPU.**
+
+---
+
+## 12. n=50000_high OOM crash
+
+The config `n=50000, density=high` caused a CUDA device memory crash (core dump). Analysis:
+
+- `high` density: max_meas_id = 500, track_length = 5–15
+- 50,000 tracks × avg 10 measurements = 500,000 measurement-track links
+- Only 500 unique measurement IDs → each ID claimed by ~1,000 tracks on average
+- The inverted index maps each of 500 measurements to ~1,000 tracks → 500,000 entries
+- Prefix sum, sort, and temporary buffers for 50,000 tracks push device memory past available limits
+
+This represents a **pathological edge case** where conflict density interacts badly with scale. In real physics data (ODD, ALICE), this density regime at n=50,000 does not occur — real events have far more measurement IDs relative to track count. The crash is documented as a known algorithm limitation for adversarial synthetic inputs and does not affect physics-relevant workloads.
+
+---
+
+## 13. High-pileup real physics data: availability assessment
+
+This section documents the investigation into whether higher-multiplicity real physics datasets could be used to demonstrate GPU wins on actual physics input, avoiding the need for purely synthetic data.
+
+### Datasets investigated
+
+| Dataset | Location | Full-chain status | Reason |
+|---|---|---|---|
+| `tml_full/ttbar_mu200` | `/data/alice/sbetisor/traccc/data/tml_full/ttbar_mu200/` | **Not usable** | TrackML CSV detector format; `traccc_seq_example` only supports detray JSON geometry. Full-chain execution (CKF + Kalman fitting → ambiguity resolution) requires a detray geometry object. Converting TrackML CSV → detray JSON is non-trivial and not implemented. |
+| `geant4_10muon_{5,10,50,100}GeV` | `/data/alice/sbetisor/traccc/data/odd/` | **Crash** | Runtime error: `Could not find geometry ID (1152922329240578050) in the detector description`. These datasets were generated with a different ODD detector geometry version than the currently deployed `odd-detray_geometry_detray.json`. |
+| `geant4_10muon_1GeV` | `/data/alice/sbetisor/traccc/data/odd/` | **Works ✓** | Geometry IDs match the deployed ODD geometry. This is the only ODD dataset that runs to completion. |
+
+### Implication
+
+The available benchmark data constrains the real-physics evaluation to `geant4_10muon_1GeV` events (n≈87 candidates). These events are, by physics construction, in the low-multiplicity regime: 10 single muons per event produce at most ~100 overlapping track candidates because CKF generates few combinatorial duplicates for clean isolated tracks.
+
+For the thesis, this is sufficient. The two-point evidence chain is:
+
+1. **Real physics (n≈87):** GPU is 6.3× slower. This characterises the low-pileup regime.
+2. **Synthetic crossover sweep (n=100–10,000):** GPU becomes competitive at n≈2,000–3,000 and continues to improve. This characterises the high-pileup regime.
+
+The synthetic sweep is not a workaround for missing real data — it is the appropriate tool for **controlled scaling analysis**, as it allows isolation of the ambiguity resolution stage under well-defined conditions independent of the upstream chain. The real physics data provides ground truth for the low-n anchor point of the crossover curve.

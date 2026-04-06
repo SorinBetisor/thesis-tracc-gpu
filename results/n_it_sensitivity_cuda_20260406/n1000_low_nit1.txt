@@ -1,0 +1,13 @@
+backend=gpu
+n_it_max=1
+adaptive_n_it=false
+n_candidates=1000 n_selected=744 n_removed=256
+time_ms_mean=35.4153 time_ms_std=1.96496 time_ms_median=34.7354 time_ms_p95=40.5949
+events_per_sec=28.2364
+peak_memory_mb=296.805
+output_hash=3455467726349387271
+time_h2d_ms=5.46463
+time_d2h_ms=0.311593
+cpu_hash=3455467726349387271
+gpu_hash=3455467726349387271
+hash_match=true
