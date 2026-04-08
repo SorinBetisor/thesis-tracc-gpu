@@ -1,0 +1,5 @@
+n_candidates=1167 n_selected=840 n_removed=327
+time_ms_mean=5.71378 time_ms_std=0.0245532 time_ms_median=5.71998 time_ms_p95=5.75983
+events_per_sec=175.015
+peak_memory_mb=16
+output_hash=8567206790244965229
