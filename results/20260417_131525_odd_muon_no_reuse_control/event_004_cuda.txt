@@ -1,0 +1,25 @@
+backend=gpu
+n_it_max=100
+adaptive_n_it=true
+reuse_eviction_graph=true
+n_candidates=85 n_selected=40 n_removed=45
+time_ms_mean=2.02617 time_ms_std=0.00588554 time_ms_median=2.02782 time_ms_p95=2.03963
+events_per_sec=493.543
+peak_memory_mb=113.508
+output_hash=12406374828683779362
+time_h2d_ms=0.825645
+time_d2h_ms=0.056766
+cpu_hash=12406374828683779362
+gpu_hash=12406374828683779362
+hash_match=true
+profile_filter_setup_ms=0.106304
+profile_unique_meas_ms=0.306176
+profile_inverted_index_ms=0.198656
+profile_shared_count_ms=0.038912
+profile_initial_sort_ms=0.1536
+profile_eviction_loop_ms=0.916352
+profile_output_copy_ms=0.08
+profile_eviction_graph_launches=17
+profile_eviction_graph_instantiations=1
+profile_unique_meas_count=522
+profile_hash_match=true

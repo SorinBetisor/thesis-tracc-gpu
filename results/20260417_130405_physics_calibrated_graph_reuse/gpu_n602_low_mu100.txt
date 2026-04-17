@@ -1,0 +1,14 @@
+backend=gpu
+n_it_max=100
+adaptive_n_it=true
+reuse_eviction_graph=true
+n_candidates=602 n_selected=486 n_removed=116
+time_ms_mean=5.28598 time_ms_std=0.074895 time_ms_median=5.25275 time_ms_p95=5.53993
+events_per_sec=189.18
+peak_memory_mb=118.164
+output_hash=9620283133769553963
+time_h2d_ms=3.81206
+time_d2h_ms=0.211806
+cpu_hash=9620283133769553963
+gpu_hash=9620283133769553963
+hash_match=true

@@ -1,0 +1,11 @@
+event dump_file n_candidates cpu_time_ms gpu_time_ms cpu_hash gpu_hash hash_match
+event_000 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_000.json 80 0.442517 1.879 14987783489575302542 1802131263199887019 true
+event_001 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_001.json 93 0.550674 2.46235 12453142086421834701 2151988781826743067 true
+event_002 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_002.json 88 0.497381 2.3488 9345008157390202147 14795665117078593681 true
+event_003 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_003.json 91 0.479416 2.16667 4431414398113696129 15010583452593378781 true
+event_004 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_004.json 85 0.465426 2.03807 1260705027947221447 12406374828683779362 true
+event_005 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_005.json 88 0.529101 2.29322 13485771994253042740 13499704061817029473 true
+event_006 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_006.json 80 0.436434 1.90775 18194053673459034722 5084790526001344626 true
+event_007 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_007.json 83 0.43448 1.95717 7893564837571112517 18407193890041164178 true
+event_008 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_008.json 91 0.532321 2.38096 5612447471269170120 17543432819908553951 true
+event_009 /user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406/event_009.json 89 0.533114 2.2926 5979448107049964117 9957443169961813182 true

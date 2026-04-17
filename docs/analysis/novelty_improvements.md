@@ -64,6 +64,8 @@ The eviction loop itself consists of (per outer graph-replay cycle):
 
 **Problem:** Each outer loop iteration calls `cudaStreamBeginCapture` + `cudaGraphInstantiate`. At n=1000 with 200 graph launches, this is 200 costly instantiations.
 
+**Status update (2026-04-17):** A first implementation of this direction now exists behind an explicit benchmark flag (`--reuse-eviction-graph`). See `graph_reuse_implementation.md` for the code-level design, metrics, and validation status.
+
 **Solution:** Build the graph once with **upper-bound kernel dimensions**, then use `cudaGraphExecKernelNodeSetParams()` (CUDA 11.1+) to update only the block/thread counts between outer iterations. `cudaGraphExecUpdate()` handles structural-compatible updates without re-instantiation.
 
 **Expected impact:** Eliminate graph construction overhead entirely. From n_it sensitivity data, this is the dominant cost at small n (n < 2,000). Could push GPU break-even from n ≈ 3,000 down to n ≈ 1,000.

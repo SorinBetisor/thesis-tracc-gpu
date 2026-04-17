@@ -303,6 +303,29 @@ The adaptive formula gives `n_it = max(10, min(50, n_accepted/5))`, yielding n_i
 
 The remaining ~0.24 ms is synchronization and overhead not captured by NVTX events.
 
+### Graph-reuse follow-up on the same ODD dumps (2026-04-17)
+
+A rerun on the same frozen ODD dump set was performed with the new CUDA graph reuse mode enabled. Results were saved to:
+
+- `results/20260417_131525_odd_muon_no_reuse_control/`
+- `results/20260417_131018_odd_muon_graph_reuse/`
+
+Summary:
+
+| Metric | same-binary control dump run | graph reuse dump run |
+|---|---:|---:|
+| mean CPU time (ms) | 0.484 | 0.490 |
+| mean GPU time (ms) | 2.187 | 2.173 |
+| GPU speedup vs control | — | **1.01x** |
+
+All 10 rerun events again produced `hash_match=true`.
+
+**Interpretation:**
+
+- Same-binary control shows that graph reuse reduces the mean GPU runtime on real frozen ODD events by about 1%.
+- The qualitative conclusion is unchanged: the GPU remains much slower than CPU for these low-multiplicity events.
+- This makes the graph-reuse contribution measurable but clearly insufficient on its own for the small-`n` real-physics regime.
+
 ### Implication for RQ4 (crossover regime)
 
 Real low-multiplicity muon events (~87 candidates) are **firmly in the GPU-loss regime**. The GPU would need to be ~6× faster on this problem size to break even with the CPU. Given the fixed graph construction and kernel dispatch costs, this is not achievable with algorithmic tuning alone at this scale. The threshold where GPU becomes competitive lies at n ≈ 2000–3000 candidates (as shown in Section 10).

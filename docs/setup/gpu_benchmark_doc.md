@@ -107,6 +107,7 @@ time_d2h_ms=<x>
 cpu_hash=<hash>
 gpu_hash=<hash>
 hash_match=true|false
+reuse_eviction_graph=true|false
 ```
 
 | Metric | Definition |
@@ -120,6 +121,7 @@ hash_match=true|false
 | `cpu_hash` | Hash produced by the CPU reference resolver on the same input. |
 | `gpu_hash` | Hash produced by the GPU resolver. Must equal `cpu_hash` for correctness. |
 | `hash_match` | `true` if `gpu_hash == cpu_hash`. A `false` result means the GPU and CPU resolvers disagree on which tracks to select — a correctness failure. |
+| `reuse_eviction_graph` | `true` when the benchmark uses one-time CUDA graph instantiation with per-iteration kernel-node parameter updates (`--reuse-eviction-graph`). |
 
 ---
 
@@ -138,6 +140,7 @@ profile_initial_sort_ms=<x>
 profile_eviction_loop_ms=<x>
 profile_output_copy_ms=<x>
 profile_eviction_graph_launches=<N>
+profile_eviction_graph_instantiations=<N>
 profile_unique_meas_count=<N>
 profile_hash_match=true|false
 ```
@@ -157,6 +160,27 @@ The CUDA Graph inside the eviction loop cannot be profiled at the individual-ker
 | `initial_sort_ms`    | Thrust `transform` (rel_shared), `thrust::copy`, `thrust::sort` | `initial_sort` |
 | `eviction_loop_ms`   | CUDA Graph loop (all eviction kernels × `eviction_graph_launches` launches) | `eviction_loop` |
 | `output_copy_ms`     | `fill_track_candidates` | `output_copy` |
+
+### Graph reuse mode
+
+The benchmark can optionally enable reuse of a single eviction-loop CUDA graph execution object:
+
+```bash
+$TRACCC_SRC/build/bin/traccc_benchmark_resolver_cuda \
+  --synthetic --n-candidates=1000 --conflict-density=med \
+  --reuse-eviction-graph --profile
+```
+
+This mode keeps the same greedy kernels and correctness checks, but avoids repeated `cudaGraphInstantiate(...)` calls by:
+
+- capturing the eviction graph once,
+- instantiating one `cudaGraphExec_t`,
+- updating the launch parameters of the dynamic kernels between outer iterations.
+
+The profile field `profile_eviction_graph_instantiations` is intended to quantify this directly:
+
+- baseline rebuild mode: instantiation count scales with outer loop steps,
+- reuse mode: instantiation count should remain close to `1`.
 
 ### NVTX range markers (nsys timeline)
 

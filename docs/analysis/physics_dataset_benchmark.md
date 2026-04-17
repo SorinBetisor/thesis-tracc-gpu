@@ -149,3 +149,32 @@ results/20260408_170250_physics_calibrated/
 ## 6. Key takeaway
 
 > At all pileup levels benchmarked (μ=0–300, n=56–1,770), the **traccc CPU greedy resolver outperforms the GPU** on the Quadro GV100 for single-event processing. The GPU is competitive only at n > 2,500–4,000 candidates. This regime is not reached with standard ACTS CKF quality cuts at Run 3 pileup. The GPU becomes advantageous at HL-LHC extreme conditions (μ≥420), with loose track selection, in heavy-ion environments, or when batching multiple events.
+
+---
+
+## 7. Graph-Reuse Follow-Up (2026-04-17)
+
+An additional follow-up benchmark was run with the new CUDA graph reuse implementation enabled (`--reuse-eviction-graph`), using:
+
+- same-binary control directory: `results/20260417_131434_physics_calibrated_no_reuse_control/`
+- graph-reuse directory: `results/20260417_130405_physics_calibrated_graph_reuse/`
+
+### GPU-only before/after summary
+
+| Config | control GPU (ms) | graph reuse GPU (ms) | speedup |
+|---|---:|---:|---:|
+| n56_low | 1.496 | 1.492 | 1.00x |
+| n154_low | 8.239 | 2.015 | 4.09x |
+| n307_low | 17.225 | 3.315 | 5.20x |
+| n602_low | 5.062 | 5.286 | 0.96x |
+| n821_low | 26.370 | 7.390 | 3.57x |
+| n1167_low | 17.566 | 9.038 | 1.94x |
+| n1770_low | 13.521 | 13.433 | 1.01x |
+
+At medium density the same-binary comparison is similarly workload-dependent: several points improve strongly (`n56_med`, `n307_med`, `n821_med`), while a few are neutral or slightly worse (`n154_med`, `n1167_med`). All rerun configurations again produced `hash_match=true`.
+
+### Interpretation
+
+- CUDA graph reuse can be highly beneficial in specific calibrated regimes where graph management overhead dominates, but the benefit is not uniform across all pileup/conflict configurations.
+- Even after the improvement, the CPU still remains the better single-event executor across the standard Run-3 ttbar range in these measurements.
+- This confirms the value of graph reuse as an **engineering novelty**, while also showing that further work is still needed to move the real physics crossover point substantially.

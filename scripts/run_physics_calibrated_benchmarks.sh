@@ -44,6 +44,7 @@ N_TO_PU[1770]="mu300"
 CONFLICT_DENSITIES="low med"
 REPEATS=20
 WARMUP=5
+GPU_EXTRA_ARGS="${GPU_EXTRA_ARGS:-}"
 
 echo "=== GPU device ==="
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null || echo "(no GPU visible)"
@@ -71,6 +72,7 @@ for N in 56 154 307 602 821 1167 1770; do
             --conflict-density=$DENSITY \
             --repeats=$REPEATS \
             --warmup=$WARMUP \
+            $GPU_EXTRA_ARGS \
             > "$OUTDIR/gpu_${TAG}.txt" 2>&1
         grep "time_ms_mean\|n_candidates\|events_per_sec\|hash_match" "$OUTDIR/gpu_${TAG}.txt"
         echo ""
@@ -88,9 +90,9 @@ for N in 56 154 307 602 821 1167 1770; do
     PU_LABEL="${N_TO_PU[$N]}"
     CPU_FILE="$OUTDIR/cpu_n${N}_low_${PU_LABEL}.txt"
     GPU_FILE="$OUTDIR/gpu_n${N}_low_${PU_LABEL}.txt"
-    CPU_T=$(grep "time_ms_mean" "$CPU_FILE" 2>/dev/null | awk -F= '{print $2}')
-    GPU_T=$(grep "time_ms_mean" "$GPU_FILE" 2>/dev/null | awk -F= '{print $2}')
-    MATCH=$(grep "hash_match" "$GPU_FILE" 2>/dev/null | awk -F= '{print $2}')
+    CPU_T=$(grep -o "time_ms_mean=[^ ]*" "$CPU_FILE" 2>/dev/null | cut -d= -f2)
+    GPU_T=$(grep -o "time_ms_mean=[^ ]*" "$GPU_FILE" 2>/dev/null | cut -d= -f2)
+    MATCH=$(grep -o "hash_match=[^ ]*" "$GPU_FILE" 2>/dev/null | cut -d= -f2)
     RATIO=$(echo "$CPU_T $GPU_T" | awk '{if($2>0) printf "%.2f", $1/$2; else print "N/A"}')
     printf "%12s | %12s | %11s | %11s | %14s | %s\n" \
         "$N" "$PU_LABEL" "$CPU_T" "$GPU_T" "$RATIO" "$MATCH"
