@@ -12,12 +12,20 @@
 #   --outdir <dumps-dir>/../benchmark_<timestamp>
 #
 # Environment overrides:
-#   TRACCC_SRC   path to traccc build root (default /data/alice/sbetisor/traccc)
+#   TRACCC_SRC      path to traccc build root (default /data/alice/sbetisor/traccc)
+#   REPEATS         timed iterations per event (default 10)
+#   WARMUP          warmup iterations per event (default 3)
+#   CPU_EXTRA_ARGS  extra flags passed to traccc_benchmark_resolver
+#   GPU_EXTRA_ARGS  extra flags passed to traccc_benchmark_resolver_cuda
 set -euo pipefail
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 CPU_BIN="$TRACCC_SRC/build/bin/traccc_benchmark_resolver"
 GPU_BIN="$TRACCC_SRC/build/bin/traccc_benchmark_resolver_cuda"
+REPEATS="${REPEATS:-10}"
+WARMUP="${WARMUP:-3}"
+CPU_EXTRA_ARGS="${CPU_EXTRA_ARGS:-}"
+GPU_EXTRA_ARGS="${GPU_EXTRA_ARGS:-}"
 
 DUMPS_DIR=""
 OUTDIR=""
@@ -64,8 +72,12 @@ fi
 echo "=== Benchmark from real physics event dumps ==="
 echo "Dumps:   $DUMPS_DIR"
 echo "Output:  $OUTDIR"
+echo "Repeats: $REPEATS"
+echo "Warmup:  $WARMUP"
 $RUN_CPU && echo "CPU:     enabled"
 $RUN_GPU && echo "GPU:     enabled ($(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null | head -1 || echo 'no GPU info'))"
+[[ -n "$CPU_EXTRA_ARGS" ]] && echo "CPU args: $CPU_EXTRA_ARGS"
+[[ -n "$GPU_EXTRA_ARGS" ]] && echo "GPU args: $GPU_EXTRA_ARGS"
 echo ""
 
 SUMMARY="$OUTDIR/summary.txt"
@@ -87,7 +99,8 @@ for DUMP in "$DUMPS_DIR"/event_*.json; do
 
     if $RUN_CPU; then
         CPU_OUT="$OUTDIR/${BASENAME}_cpu.txt"
-        "$CPU_BIN" --input-dump="$DUMP" --repeats=10 --warmup=3 --profile \
+        "$CPU_BIN" --input-dump="$DUMP" --repeats="$REPEATS" --warmup="$WARMUP" \
+            --profile $CPU_EXTRA_ARGS \
             2>&1 | tee "$CPU_OUT" > /dev/null
         CPU_TIME=$(grep '^time_ms_mean' "$CPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
         CPU_HASH=$(grep '^output_hash' "$CPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
@@ -96,7 +109,8 @@ for DUMP in "$DUMPS_DIR"/event_*.json; do
 
     if $RUN_GPU; then
         GPU_OUT="$OUTDIR/${BASENAME}_cuda.txt"
-        "$GPU_BIN" --input-dump="$DUMP" --repeats=10 --warmup=3 --profile \
+        "$GPU_BIN" --input-dump="$DUMP" --repeats="$REPEATS" --warmup="$WARMUP" \
+            --profile $GPU_EXTRA_ARGS \
             2>&1 | tee "$GPU_OUT" > /dev/null
         GPU_TIME=$(grep '^time_ms_mean' "$GPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")
         GPU_HASH=$(grep '^gpu_hash' "$GPU_OUT" | awk -F= '{print $2}' | awk '{print $1}' || echo "n/a")

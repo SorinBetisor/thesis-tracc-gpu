@@ -1,0 +1,4 @@
+event dump_file n_candidates cpu_time_ms gpu_resolver_ms cpu_hash gpu_hash hash_match
+event_000000000 /user/sbetisor/thesis/sorin-thesis-work/results/20260419_193151_fatras_real_graph_reuse/dumps_mu400/event_000000000.json 2655 31.1672 21.513 5019471677794788656 2691557539168958972 true
+event_000000001 /user/sbetisor/thesis/sorin-thesis-work/results/20260419_193151_fatras_real_graph_reuse/dumps_mu400/event_000000001.json 2345 24.8458 17.9793 15467182936113015442 2753961732700467362 true
+event_000000002 /user/sbetisor/thesis/sorin-thesis-work/results/20260419_193151_fatras_real_graph_reuse/dumps_mu400/event_000000002.json 2313 26.3715 17.3946 2778177955042783438 15956076952345857884 true

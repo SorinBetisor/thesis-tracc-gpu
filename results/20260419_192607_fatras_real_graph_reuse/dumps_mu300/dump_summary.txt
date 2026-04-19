@@ -1,0 +1,3 @@
+event_idx n_tracks n_unique_measurements pval_source source_csv
+0 2030 19317 approx-chi2 /data/alice/sbetisor/traccc/data/odd/fatras_ttbar_mu300/event000000000-tracks_ckf.csv
+1 1681 16158 approx-chi2 /data/alice/sbetisor/traccc/data/odd/fatras_ttbar_mu300/event000000001-tracks_ckf.csv
