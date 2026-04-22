@@ -1,0 +1,60 @@
+==== Fatras mu=600 ev0, W=1 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=30.0038 time_ms_std=1.78485 time_ms_median=30.4907 time_ms_p95=34.1846
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=135.654 time_ms_std=0.908201 time_ms_median=136.084 time_ms_p95=137.346
+pbg_hash_match=true
+pbg_n_outer_iterations=16
+pbg_avg_batch_size=0.9375
+pbg_max_batch_size=1
+==== Fatras mu=600 ev0, W=256 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.8539 time_ms_std=0.207463 time_ms_median=26.8257 time_ms_p95=27.3815
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.4159 time_ms_std=0.401197 time_ms_median=36.2453 time_ms_p95=37.3198
+pbg_hash_match=true
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14
+==== Fatras mu=600 ev0, W=1024 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.8441 time_ms_std=0.195723 time_ms_median=26.7671 time_ms_p95=27.3399
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.5597 time_ms_std=0.263934 time_ms_median=36.4914 time_ms_p95=37.046
+pbg_hash_match=true
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14
+==== Fatras mu=600 ev0, W=4096 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.9198 time_ms_std=0.217946 time_ms_median=26.8172 time_ms_p95=27.4625
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.609 time_ms_std=0.389045 time_ms_median=36.4655 time_ms_p95=37.5194
+pbg_hash_match=true
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14
+==== Fatras mu=600 ev0, W=8192 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.8592 time_ms_std=0.19265 time_ms_median=26.7875 time_ms_p95=27.3264
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.278 time_ms_std=0.159548 time_ms_median=36.2885 time_ms_p95=36.6308
+pbg_hash_match=true
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14
+==== Fatras mu=600 ev0, W=16384 ====
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.8844 time_ms_std=0.216192 time_ms_median=26.7907 time_ms_p95=27.4091
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.4381 time_ms_std=0.104217 time_ms_median=36.4034 time_ms_p95=36.707
+pbg_hash_match=true
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14

@@ -1,0 +1,130 @@
+==== ODD event_000 ====
+cpu_hash=1802131263199887019
+baseline_n_selected=40 n_removed=40
+baseline_time_ms_mean=1.9924 time_ms_std=0.139928 time_ms_median=1.91845 time_ms_p95=2.26572
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=40
+pbg_time_ms_mean=2.70501 time_ms_std=0.1482 time_ms_median=2.69058 time_ms_p95=2.98315
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_001 ====
+cpu_hash=2151988781826743067
+baseline_n_selected=40 n_removed=53
+baseline_time_ms_mean=2.66344 time_ms_std=0.135536 time_ms_median=2.63559 time_ms_p95=3.03567
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=53
+pbg_time_ms_mean=3.29101 time_ms_std=0.0854233 time_ms_median=3.27489 time_ms_p95=3.60117
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_002 ====
+cpu_hash=14795665117078593681
+baseline_n_selected=39 n_removed=49
+baseline_time_ms_mean=2.49958 time_ms_std=0.159962 time_ms_median=2.47819 time_ms_p95=3.02629
+baseline_hash_match=true
+pbg_n_selected=39 n_removed=49
+pbg_time_ms_mean=3.06139 time_ms_std=0.0693982 time_ms_median=3.04635 time_ms_p95=3.31879
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_003 ====
+cpu_hash=15010583452593378781
+baseline_n_selected=40 n_removed=51
+baseline_time_ms_mean=1.96238 time_ms_std=0.103583 time_ms_median=1.93944 time_ms_p95=2.37793
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=51
+pbg_time_ms_mean=2.66703 time_ms_std=0.11154 time_ms_median=2.64578 time_ms_p95=2.98639
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_004 ====
+cpu_hash=12406374828683779362
+baseline_n_selected=40 n_removed=45
+baseline_time_ms_mean=1.89819 time_ms_std=0.0961449 time_ms_median=1.87349 time_ms_p95=2.20711
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=45
+pbg_time_ms_mean=2.58123 time_ms_std=0.123798 time_ms_median=2.57161 time_ms_p95=2.91758
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_005 ====
+cpu_hash=13499704061817029473
+baseline_n_selected=40 n_removed=48
+baseline_time_ms_mean=2.21567 time_ms_std=0.137166 time_ms_median=2.20551 time_ms_p95=2.59477
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=48
+pbg_time_ms_mean=2.59125 time_ms_std=0.0741408 time_ms_median=2.5799 time_ms_p95=2.88081
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_006 ====
+cpu_hash=5084790526001344626
+baseline_n_selected=38 n_removed=42
+baseline_time_ms_mean=1.78158 time_ms_std=0.0972776 time_ms_median=1.75515 time_ms_p95=2.15466
+baseline_hash_match=true
+pbg_n_selected=38 n_removed=42
+pbg_time_ms_mean=2.23621 time_ms_std=0.0921853 time_ms_median=2.21632 time_ms_p95=2.47879
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_007 ====
+cpu_hash=18407193890041164178
+baseline_n_selected=40 n_removed=43
+baseline_time_ms_mean=1.79747 time_ms_std=0.0755913 time_ms_median=1.77738 time_ms_p95=2.07129
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=43
+pbg_time_ms_mean=2.38898 time_ms_std=0.0914123 time_ms_median=2.35974 time_ms_p95=2.68003
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_008 ====
+cpu_hash=17543432819908553951
+baseline_n_selected=40 n_removed=51
+baseline_time_ms_mean=2.28834 time_ms_std=0.131338 time_ms_median=2.27091 time_ms_p95=2.62286
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=51
+pbg_time_ms_mean=2.58059 time_ms_std=0.0701518 time_ms_median=2.57758 time_ms_p95=2.83036
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0
+==== ODD event_009 ====
+cpu_hash=9957443169961813182
+baseline_n_selected=40 n_removed=49
+baseline_time_ms_mean=2.32838 time_ms_std=0.161521 time_ms_median=2.30619 time_ms_p95=2.65577
+baseline_hash_match=true
+pbg_n_selected=40 n_removed=49
+pbg_time_ms_mean=2.52683 time_ms_std=0.0724136 time_ms_median=2.5179 time_ms_p95=2.80337
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=1
+pbg_avg_batch_size=0
+pbg_max_batch_size=0

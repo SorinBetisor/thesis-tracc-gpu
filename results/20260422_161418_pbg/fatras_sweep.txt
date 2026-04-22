@@ -1,0 +1,154 @@
+==== Fatras mu=300 event_000000000 ====
+cpu_hash=10014768257344734279
+cpu_duplicate_rate=0
+baseline_n_selected=1453 n_removed=577
+baseline_time_ms_mean=17.4647 time_ms_std=1.71373 time_ms_median=17.0913 time_ms_p95=20.349
+baseline_hash_match=true
+pbg_n_selected=1453 n_removed=577
+pbg_time_ms_mean=22.321 time_ms_std=1.96345 time_ms_median=21.9549 time_ms_p95=27.9403
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=1
+pbg_max_batch_size=2
+==== Fatras mu=300 event_000000001 ====
+cpu_hash=8676001173953726041
+cpu_duplicate_rate=0
+baseline_n_selected=1217 n_removed=464
+baseline_time_ms_mean=10.8595 time_ms_std=0.132656 time_ms_median=10.8787 time_ms_p95=11.1871
+baseline_hash_match=true
+pbg_n_selected=1217 n_removed=464
+pbg_time_ms_mean=18.2441 time_ms_std=0.0728521 time_ms_median=18.2461 time_ms_p95=18.4235
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=1
+pbg_max_batch_size=2
+==== Fatras mu=400 event_000000000 ====
+cpu_hash=2691557539168958972
+cpu_duplicate_rate=0
+baseline_n_selected=1812 n_removed=843
+baseline_time_ms_mean=18.1677 time_ms_std=0.140038 time_ms_median=18.1334 time_ms_p95=18.4867
+baseline_hash_match=true
+pbg_n_selected=1812 n_removed=843
+pbg_time_ms_mean=23.9998 time_ms_std=0.127664 time_ms_median=23.9902 time_ms_p95=24.2081
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=2.5
+pbg_max_batch_size=5
+==== Fatras mu=400 event_000000001 ====
+cpu_hash=2753961732700467362
+cpu_duplicate_rate=0
+baseline_n_selected=1610 n_removed=735
+baseline_time_ms_mean=16.7025 time_ms_std=0.124926 time_ms_median=16.6607 time_ms_p95=16.9404
+baseline_hash_match=true
+pbg_n_selected=1610 n_removed=735
+pbg_time_ms_mean=25.0741 time_ms_std=0.24689 time_ms_median=25.027 time_ms_p95=25.7381
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=1
+pbg_max_batch_size=2
+==== Fatras mu=400 event_000000002 ====
+cpu_hash=15956076952345857884
+cpu_duplicate_rate=0
+baseline_n_selected=1657 n_removed=656
+baseline_time_ms_mean=15.5709 time_ms_std=0.12831 time_ms_median=15.5668 time_ms_p95=15.8243
+baseline_hash_match=true
+pbg_n_selected=1657 n_removed=656
+pbg_time_ms_mean=20.6511 time_ms_std=0.206782 time_ms_median=20.6216 time_ms_p95=21.1717
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=2
+pbg_max_batch_size=4
+==== Fatras mu=500 event_000000000 ====
+cpu_hash=14634293563990600851
+cpu_duplicate_rate=0
+baseline_n_selected=2095 n_removed=1147
+baseline_time_ms_mean=21.7444 time_ms_std=0.122553 time_ms_median=21.7304 time_ms_p95=21.9534
+baseline_hash_match=true
+pbg_n_selected=2095 n_removed=1147
+pbg_time_ms_mean=30.8536 time_ms_std=0.117296 time_ms_median=30.8388 time_ms_p95=31.0504
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=2
+pbg_max_batch_size=5
+==== Fatras mu=500 event_000000001 ====
+cpu_hash=6113342849517501162
+cpu_duplicate_rate=0
+baseline_n_selected=1980 n_removed=1042
+baseline_time_ms_mean=20.0186 time_ms_std=0.13907 time_ms_median=20.0194 time_ms_p95=20.2952
+baseline_hash_match=true
+pbg_n_selected=1980 n_removed=1042
+pbg_time_ms_mean=30.7909 time_ms_std=0.102967 time_ms_median=30.7884 time_ms_p95=31.01
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=2.66667
+pbg_max_batch_size=7
+==== Fatras mu=500 event_000000002 ====
+cpu_hash=600587151943757211
+cpu_duplicate_rate=0
+baseline_n_selected=2039 n_removed=1026
+baseline_time_ms_mean=19.4726 time_ms_std=0.119491 time_ms_median=19.4379 time_ms_p95=19.6627
+baseline_hash_match=true
+pbg_n_selected=2039 n_removed=1026
+pbg_time_ms_mean=29.0023 time_ms_std=0.152421 time_ms_median=29.0152 time_ms_p95=29.2788
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=3
+pbg_max_batch_size=7
+==== Fatras mu=600 event_000000000 ====
+cpu_hash=8202335327063675732
+cpu_duplicate_rate=0
+baseline_n_selected=2484 n_removed=1524
+baseline_time_ms_mean=26.8614 time_ms_std=0.189945 time_ms_median=26.7647 time_ms_p95=27.3344
+baseline_hash_match=true
+pbg_n_selected=2484 n_removed=1524
+pbg_time_ms_mean=36.5044 time_ms_std=0.100511 time_ms_median=36.4807 time_ms_p95=36.7096
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=7.66667
+pbg_max_batch_size=14
+==== Fatras mu=600 event_000000001 ====
+cpu_hash=65371147275193725
+cpu_duplicate_rate=0
+baseline_n_selected=2372 n_removed=1544
+baseline_time_ms_mean=29.3338 time_ms_std=0.346 time_ms_median=29.2696 time_ms_p95=30.1346
+baseline_hash_match=true
+pbg_n_selected=2372 n_removed=1544
+pbg_time_ms_mean=39.1887 time_ms_std=0.232365 time_ms_median=39.1738 time_ms_p95=39.6216
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=3.33333
+pbg_max_batch_size=6
+==== Fatras mu=600 event_000000002 ====
+cpu_hash=14761905633643951641
+cpu_duplicate_rate=0
+baseline_n_selected=2452 n_removed=1488
+baseline_time_ms_mean=24.9756 time_ms_std=0.179085 time_ms_median=24.9046 time_ms_p95=25.4429
+baseline_hash_match=true
+pbg_n_selected=2452 n_removed=1488
+pbg_time_ms_mean=36.007 time_ms_std=0.0627047 time_ms_median=36.0134 time_ms_p95=36.1086
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=3
+pbg_avg_batch_size=2.33333
+pbg_max_batch_size=6
