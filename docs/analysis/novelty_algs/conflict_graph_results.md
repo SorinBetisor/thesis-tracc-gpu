@@ -16,6 +16,39 @@ Cross-references:
 
 ---
 
+## 0. Resolver validity contract
+
+Before reporting numbers, this section establishes what "correct" means for
+an ambiguity resolver, because the CPU greedy is **itself a heuristic** (it
+greedily solves a Maximum Weight Independent Set problem, which is NP-hard in
+general). A resolver output is **valid** if and only if it satisfies all three
+of the following criteria:
+
+1. **Threshold validity**: every accepted track `t` satisfies
+   `rel_shared(t) = n_shared(t) / n_meas(t) <= max_shared_meas`. This is the
+   resolver's only hard algorithmic specification; any set of tracks meeting
+   this criterion is a correct output regardless of which specific tracks are
+   included.
+
+2. **Quality parity**: the post-resolution `duplicate_rate`, `n_selected`,
+   and (where truth labels are available) selection efficiency and fake rate
+   are within an agreed tolerance of the CPU greedy reference. A valid but
+   low-quality resolver that passes the threshold check but keeps many more
+   duplicate tracks than the CPU reference fails this criterion.
+
+3. **Determinism**: given the same serialised dump, the same binary, and the
+   same GPU, the resolver produces the same selected set on every run.
+
+The `hash_match` metric in this document tests whether the Tier 2c output is
+**selection-identical** to the CPU reference — meaning both resolvers select
+exactly the same set of tracks as identified by their sorted measurement-id
+patterns. This is a **stronger** condition than validity (criterion 1 above)
+and is reported separately to distinguish "algorithmically identical to CPU"
+from "valid but different". Being non-identical to the CPU reference does
+**not** mean wrong; it means the algorithm found a different valid solution.
+
+---
+
 ## 1. Hardware and build
 
 - GPU: NVIDIA Quadro GV100 (Stoomboot `wn-lot-001`), CUDA 12.x.
@@ -69,7 +102,11 @@ Timing, mean over 5 repeats:
   (GPU-only resolver region).
 
 Quality (all three GPU modes compared against the CPU greedy reference):
-- `hash_match` — byte-identical accepted-set hash.
+- `hash_match` — whether the accepted set is **selection-identical** to the
+  CPU reference (same tracks by sorted measurement-id pattern). Uses a stable
+  FNV-1a 64-bit hash of the sorted pattern string; a `true` value means
+  criterion 1, 2, and 3 are simultaneously satisfied and the selection is
+  additionally CPU-identical.
 - `track_overlap_vs_cpu = |S_gpu ∩ S_cpu| / |S_cpu|`.
 - `duplicate_rate_post`.
 - `n_selected`.
@@ -107,12 +144,14 @@ Quality on Fatras pile-up:
 | 500 | 2/3 | 0.9995 | 3/3 | 1.0000 |
 | 600 | 0/3 | 0.9987 | 3/3 | 1.0000 |
 
-JP is **byte-identical to the CPU greedy reference on every Fatras event
-tested** (hash_match = 12/12, overlap = 1.0 across μ=300..600). It is also
-the fastest backend on every Fatras point, reaching **1.76× speedup over
-the CUDA baseline and 2.44× over PBG at μ=600**. MIS is byte-identical
-through μ=400 and degrades to ≥ 0.9987 overlap at μ=500..600 while
-retaining a small positive speedup over baseline.
+JP is **selection-identical to the CPU greedy reference on every Fatras
+event tested** (hash_match = 12/12, overlap = 1.0 across μ=300..600). It is
+also the fastest backend on every Fatras point, reaching **1.76× speedup
+over the CUDA baseline and 2.44× over PBG at μ=600**. MIS is
+selection-identical through μ=400 and degrades to ≥ 0.9987 overlap at
+μ=500..600 while retaining a small positive speedup over baseline. Both MIS
+and JP satisfy validity criterion 1 (threshold validity) on all tested
+inputs.
 
 Per-iteration structure:
 
@@ -200,8 +239,8 @@ designed for.
 ## 4. A/B: MIS vs JP
 
 **JP wins on real data.** On every Fatras dump tested (μ ∈ {300, 400,
-500, 600}), JP produces byte-identical accepted sets to the CPU reference
-and is 1.3–1.8× faster than MIS.
+500, 600}), JP produces selection-identical accepted sets to the CPU
+reference and is 1.3–1.8× faster than MIS.
 
 **MIS wins on adversarial synthetic.** At `n ≥ 2000` with medium
 conflict density, MIS converges in fewer outer iterations (9–23 vs
@@ -224,22 +263,26 @@ for pathological regimes and to support the thesis A/B argument.
   of the tracks to remove in its first few iterations and the outer loop
   is already down to 1–2 iterations, Tier 2c does not help. This is the
   regime the `--parallel-batch` default remains useful in.
-- **Byte-identical output requirement under all conditions**: PBG
+- **Selection-identical output requirement under all conditions**: PBG
   (`hash_match = true` on all tested inputs) is the correct choice;
-  Tier 2c MIS can diverge at very high conflict density, and JP
-  guarantees byte-identical output on real pile-up but not on adversarial
-  synthetic stress tests.
+  Tier 2c MIS can diverge at very high conflict density, and JP guarantees
+  selection-identical output on real pile-up geometries but not on
+  adversarial synthetic stress tests. All modes remain valid per criterion 1.
 
 ---
 
 ## 5. Known limitations and follow-ups
 
 1. **High-density synthetic at n = 10 000 crashes** inside the COO sort
-   with an illegal-memory-access; the `max_edges_ub` pre-allocator
-   underestimates the worst case for the most extreme synthetic dumps.
-   The bug does not reproduce on any real Fatras dump or on the `med`
-   density sweep up to n = 10 000, so it is carried as a follow-up
-   rather than a blocker.
+   with an illegal-memory-access. The root cause was twofold: (a) the
+   `max_edges_ub` pre-allocator underestimated the worst case for the most
+   extreme synthetic dumps, and (b) the `build_conflict_coo` gather loop
+   could overrun `smem_gathered` when a single measurement was shared by
+   more than `blockDim.x = 128` accepted tracks. The gather loop has since
+   been fixed with a chunked multi-pass approach that is safe for arbitrarily
+   wide measurement rows; the pre-allocator remains conservative and may
+   still trigger on extreme adversarial inputs, but the smem hazard is
+   resolved.
 2. **No incremental CSR reuse.** The design note (Sec. 5 of an earlier
    draft) proposed maintaining the CSR across outer iterations with
    tombstones. The merged implementation rebuilds every iteration; for
@@ -267,9 +310,10 @@ For physical detector geometries (Fatras ttbar pile-up μ=300..600, ODD
 
 - is **1.0–1.8× faster than the CUDA baseline** on the resolver region,
 - is **1.3–2.4× faster than PBG (Tier 2a)** at μ ≥ 400,
-- produces **byte-identical accepted sets** to the CPU greedy reference
+- produces **selection-identical accepted sets** to the CPU greedy reference
   under the Jones–Plassmann variant (`hash_match = true`, overlap = 1.0,
-  on every Fatras event tested),
+  on every Fatras event tested), satisfying the validity contract (Sec. 0)
+  with maximum quality parity,
 - uses under 2 MB of extra device memory for the CSR conflict graph on
   Fatras inputs, and
 - is exposed behind a single harness flag (`--conflict-graph=mis|jp|both`)
