@@ -1,0 +1,76 @@
+backend=gpu
+n_it_max=100
+adaptive_n_it=true
+parallel_batch_enabled=true
+parallel_batch_window=8192
+n_candidates=2345 n_selected_cpu=1610
+time_h2d_ms=10.5224
+peak_memory_mb=142.262
+cpu_hash=6847361508289977110
+cpu_duplicate_rate=0
+baseline_label=baseline
+baseline_n_selected=1610 n_removed=735
+baseline_time_ms_mean=16.7937 time_ms_std=0.149531 time_ms_median=16.7947 time_ms_p95=17.072
+baseline_events_per_sec=59.5462
+baseline_time_d2h_ms=0.811949
+baseline_output_hash=6847361508289977110
+baseline_hash_match=true
+baseline_track_overlap_vs_cpu=1
+baseline_duplicate_rate_post=0
+pbg_label=parallel_batch
+pbg_n_selected=1610 n_removed=735
+pbg_time_ms_mean=25.1518 time_ms_std=0.241788 time_ms_median=25.1037 time_ms_p95=25.7846
+pbg_events_per_sec=39.7585
+pbg_time_d2h_ms=0.802031
+pbg_output_hash=6847361508289977110
+pbg_hash_match=true
+pbg_track_overlap_vs_cpu=1
+pbg_duplicate_rate_post=0
+pbg_n_outer_iterations=2
+pbg_avg_batch_size=1
+pbg_max_batch_size=2
+graph_mis_label=graph_mis
+graph_mis_n_selected=1610 n_removed=735
+graph_mis_time_ms_mean=14.7391 time_ms_std=0.0458111 time_ms_median=14.7345 time_ms_p95=14.8279
+graph_mis_events_per_sec=67.8468
+graph_mis_time_d2h_ms=0.82286
+graph_mis_output_hash=6847361508289977110
+graph_mis_hash_match=true
+graph_mis_track_overlap_vs_cpu=1
+graph_mis_duplicate_rate_post=0
+graph_mis_n_outer_iterations=11
+graph_mis_avg_batch_size=66.8182
+graph_mis_max_batch_size=405
+graph_mis_avg_vertices=1686.36
+graph_mis_avg_edges=7358.91
+graph_mis_max_vertices=1940
+graph_mis_max_edges=34672
+graph_jp_label=graph_jp
+graph_jp_n_selected=1610 n_removed=735
+graph_jp_time_ms_mean=9.7174 time_ms_std=0.0223621 time_ms_median=9.71786 time_ms_p95=9.75825
+graph_jp_events_per_sec=102.908
+graph_jp_time_d2h_ms=0.150712
+graph_jp_output_hash=6847361508289977110
+graph_jp_hash_match=true
+graph_jp_track_overlap_vs_cpu=1
+graph_jp_duplicate_rate_post=0
+graph_jp_n_outer_iterations=12
+graph_jp_avg_batch_size=61.25
+graph_jp_max_batch_size=404
+graph_jp_avg_vertices=1682
+graph_jp_avg_edges=6785.5
+graph_jp_max_vertices=1941
+graph_jp_max_edges=34672
+n_selected=1610 n_removed=735
+time_ms_mean=16.7937 time_ms_std=0.149531 time_ms_median=16.7947 time_ms_p95=17.072
+events_per_sec=59.5462
+output_hash=6847361508289977110
+time_d2h_ms=0.811949
+gpu_hash=6847361508289977110
+hash_match=true
+determinism_runs=5
+det_baseline_pass=5 det_baseline_fail=0
+det_parallel_batch_pass=5 det_parallel_batch_fail=0
+det_graph_mis_pass=5 det_graph_mis_fail=0
+det_graph_jp_pass=5 det_graph_jp_fail=0
+determinism_all_pass=true
