@@ -17,10 +17,11 @@ spack env activate traccc
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 N_EVENTS="${N_EVENTS:-10}"
 N_PARTICLES="${N_PARTICLES:-200}"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_d3_telescope}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_d3_telescope}"
 SIM_DIR="$OUTDIR/detray_simulation/telescope_detector/n_particles_${N_PARTICLES}"
 DUMP_DIR="$OUTDIR/telescope_dumps"
 mkdir -p "$SIM_DIR" "$DUMP_DIR"

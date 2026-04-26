@@ -21,10 +21,11 @@ export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 MU="${MU:-400}"
 N_EVENTS="${N_EVENTS:-20}"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_e3_fullchain}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_e3_fullchain}"
 mkdir -p "$OUTDIR"
 
 while [[ $# -gt 0 ]]; do

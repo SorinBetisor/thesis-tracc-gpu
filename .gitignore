@@ -1,3 +1,6 @@
+# Benchmark / sweep outputs (live under $HOME/data-work/results by default)
+results/
+
 cpu/logs/
 *.out
 *.err

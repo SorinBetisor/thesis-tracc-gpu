@@ -11,7 +11,8 @@
 # Environment overrides:
 #   TRACCC_SRC    path to traccc checkout (default /data/alice/sbetisor/traccc)
 #   THESIS_REPO   path to thesis-work repo (auto-detected)
-#   OUTDIR        output directory (default results/<timestamp>_phase_d1)
+#   OUTDIR              output directory (default under THESIS_RESULTS_ROOT)
+#   THESIS_RESULTS_ROOT output root (default $HOME/data-work/results)
 set -euo pipefail
 
 . /data/alice/sbetisor/spack/share/spack/setup-env.sh
@@ -30,8 +31,9 @@ export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)_phase_d1}"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/$RUN_ID}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/$RUN_ID}"
 mkdir -p "$OUTDIR"
 
 GPU_BENCH="$TRACCC_SRC/build/bin/traccc_benchmark_resolver_cuda"

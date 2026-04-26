@@ -30,7 +30,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 RUN_ID="$(date +%Y%m%d_%H%M%S)_fatras_high_pileup"
-LOG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/results/$RUN_ID"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
+LOG_DIR="$THESIS_RESULTS_ROOT/$RUN_ID"
 MASTER_LOG="$LOG_DIR/generation.log"
 mkdir -p "$LOG_DIR"
 

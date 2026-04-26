@@ -16,7 +16,8 @@
 set -euo pipefail
 
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
-ROOT="$THESIS_REPO/results"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
+ROOT="$THESIS_RESULTS_ROOT"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
 OUTDIR=""
 
@@ -28,7 +29,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_d6_aggregate}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_d6_aggregate}"
 mkdir -p "$OUTDIR"
 
 echo "=== Phase D6: aggregate sweeps under $ROOT ==="

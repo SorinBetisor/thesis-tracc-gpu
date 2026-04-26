@@ -6,7 +6,7 @@
 #   ./run_resolver_profile_nsys.sh [--nsys-only] [--ncu-only] [--n-candidates=N]
 #                                   [--conflict-density=low|med|high]
 #
-# Outputs are written to $OUTDIR (default: thesis/results/<timestamp>_profile_nsys/).
+# Outputs are written to $OUTDIR (default: $THESIS_RESULTS_ROOT/<timestamp>_profile_nsys/).
 #   <n>_<density>.nsys-rep  — Nsight Systems report  (open with nsys-ui or nsys stats)
 #   <n>_<density>.ncu-rep   — Nsight Compute report   (open with ncu-ui or ncu --import)
 #   <n>_<density>_profile.txt — benchmark --profile text output (profile_*_ms fields)
@@ -28,8 +28,9 @@ if [[ ! -x "$TRACCC_BIN" ]]; then
 fi
 
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)_profile_nsys}"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/$RUN_ID}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/$RUN_ID}"
 mkdir -p "$OUTDIR"
 
 N_CANDIDATES=10000

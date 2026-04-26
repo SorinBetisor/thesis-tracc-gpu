@@ -13,8 +13,9 @@ if [[ ! -x "$TRACCC_BIN" ]]; then
 fi
 
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/$RUN_ID}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/$RUN_ID}"
 mkdir -p "$OUTDIR"
 
 # Set PROFILE=1 to append per-phase timing to each result file.

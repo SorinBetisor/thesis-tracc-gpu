@@ -21,8 +21,9 @@ export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_e1_ncu}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_e1_ncu}"
 mkdir -p "$OUTDIR"
 
 INPUT_DUMP=""
@@ -35,7 +36,7 @@ done
 
 if [[ -z "$INPUT_DUMP" ]]; then
   # Use any available Fatras mu=600 dump as a representative high-n input.
-  INPUT_DUMP=$(find "$THESIS_REPO/results" -path "*/dumps_mu600/event_*.json" \
+  INPUT_DUMP=$(find "$THESIS_RESULTS_ROOT" -path "*/dumps_mu600/event_*.json" \
     | sort | tail -1)
   if [[ -z "$INPUT_DUMP" ]]; then
     echo "ERROR: no input dump found. Pass --input-dump=<path> or run Phase D first."
@@ -94,7 +95,7 @@ done
 # Phase E2 bonus: edge-count histogram from the existing sweep output.
 # Look for graph_size log files.
 echo "=== Bonus: edge-count histogram from Phase D sweep (if available) ==="
-SWEEP_FILE=$(find "$THESIS_REPO/results" -name "*.jp.csv" | sort | tail -1)
+SWEEP_FILE=$(find "$THESIS_RESULTS_ROOT" -name "*.jp.csv" | sort | tail -1)
 if [[ -n "$SWEEP_FILE" ]]; then
   python3 - "$SWEEP_FILE" << 'PYEOF'
 import sys, csv, collections

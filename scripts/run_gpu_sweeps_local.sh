@@ -13,12 +13,13 @@
 #   --odd-only        skip extended and n_it sweeps
 #
 # Results land in:
-#   results/<RUN_ID>_extended_cuda/
-#   results/<RUN_ID>_n_it_sweep/
-#   results/<RUN_ID>_odd_muon_cuda/
+#   $THESIS_RESULTS_ROOT/<RUN_ID>_extended_cuda/
+#   $THESIS_RESULTS_ROOT/<RUN_ID>_n_it_sweep/
+#   $THESIS_RESULTS_ROOT/<RUN_ID>_odd_muon_cuda/
 set -o pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 
 TRACCC_BIN="/data/alice/sbetisor/traccc/build/bin/traccc_benchmark_resolver_cuda"
@@ -69,7 +70,7 @@ progress() {
 # Extended sweep — 10 n_candidates × 3 densities = 30 configs
 # -----------------------------------------------------------------------
 if $RUN_EXTENDED; then
-    OUTDIR="$SCRIPT_DIR/results/${RUN_ID}_extended_cuda"
+    OUTDIR="$THESIS_RESULTS_ROOT/${RUN_ID}_extended_cuda"
     mkdir -p "$OUTDIR"
     echo "--- Extended sweep (30 configs) -> $OUTDIR"
     echo "    $(date)"
@@ -94,7 +95,7 @@ fi
 # n_it sensitivity sweep — 5 n × 3 densities × 6 n_it values = 90 configs
 # -----------------------------------------------------------------------
 if $RUN_N_IT; then
-    OUTDIR="$SCRIPT_DIR/results/${RUN_ID}_n_it_sweep"
+    OUTDIR="$THESIS_RESULTS_ROOT/${RUN_ID}_n_it_sweep"
     mkdir -p "$OUTDIR"
     echo "--- n_it sensitivity sweep (90 configs) -> $OUTDIR"
     echo "    $(date)"
@@ -129,7 +130,7 @@ if $RUN_ODD; then
     if [[ -z "$LATEST_DUMPS" ]]; then
         echo "No ODD dumps found in data/odd_muon_dumps/ — skipping."
     else
-        OUTDIR="$SCRIPT_DIR/results/${RUN_ID}_odd_muon_cuda"
+        OUTDIR="$THESIS_RESULTS_ROOT/${RUN_ID}_odd_muon_cuda"
         mkdir -p "$OUTDIR"
         echo "--- ODD GPU benchmark -> $OUTDIR"
         echo "    Dumps: $LATEST_DUMPS"
@@ -152,5 +153,5 @@ fi
 
 echo "=== All GPU sweeps complete ==="
 echo "Finished:  $(date)"
-echo "Results:   $SCRIPT_DIR/results/"
-ls -lhd "$SCRIPT_DIR/results/${RUN_ID}_"* 2>/dev/null || true
+echo "Results:   $THESIS_RESULTS_ROOT/"
+ls -lhd "$THESIS_RESULTS_ROOT/${RUN_ID}_"* 2>/dev/null || true

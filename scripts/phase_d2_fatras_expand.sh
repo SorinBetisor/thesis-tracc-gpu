@@ -23,10 +23,11 @@ spack env activate traccc
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 N_PER_MU="${N_PER_MU:-10}"
 MU_LIST="${MU_LIST:-200 300 400 500 600}"
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_d2_fatras}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_d2_fatras}"
 mkdir -p "$OUTDIR"
 
 SEQ_BIN="$TRACCC_SRC/build/bin/traccc_seq_example"

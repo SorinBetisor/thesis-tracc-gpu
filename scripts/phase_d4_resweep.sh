@@ -24,6 +24,7 @@ export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
 
 TRACCC_SRC="${TRACCC_SRC:-/data/alice/sbetisor/traccc}"
 THESIS_REPO="${THESIS_REPO:-$(cd "$(dirname "$0")/.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 
 DUMP_DIR=""
 TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
@@ -42,7 +43,7 @@ if [[ -z "$DUMP_DIR" ]]; then
   exit 1
 fi
 
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${TIMESTAMP}_phase_d4_sweep}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${TIMESTAMP}_phase_d4_sweep}"
 mkdir -p "$OUTDIR"
 
 GPU_BENCH="$TRACCC_SRC/build/bin/traccc_benchmark_resolver_cuda"

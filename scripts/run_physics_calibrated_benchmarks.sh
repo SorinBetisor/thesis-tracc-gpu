@@ -4,7 +4,7 @@
 #   mu=0->56, mu=20->154, mu=50->307, mu=100->602,
 #   mu=140->821, mu=200->1167, mu=300->1770
 #
-# Results: thesis/results/<RUN_ID>_physics_calibrated/
+# Results: $THESIS_RESULTS_ROOT/<RUN_ID>_physics_calibrated/ (default: $HOME/data-work/results)
 # Run: bash scripts/run_physics_calibrated_benchmarks.sh
 
 set -o pipefail
@@ -17,9 +17,9 @@ CPU_BIN=/data/alice/sbetisor/traccc/build/bin/traccc_benchmark_resolver
 GPU_BIN=/data/alice/sbetisor/traccc/build/bin/traccc_benchmark_resolver_cuda
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-RESULTS_ROOT="$SCRIPT_DIR/../results"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="$(date +%Y%m%d_%H%M%S)_physics_calibrated"
-OUTDIR="$RESULTS_ROOT/$RUN_ID"
+OUTDIR="$THESIS_RESULTS_ROOT/$RUN_ID"
 mkdir -p "$OUTDIR"
 
 LOG="$OUTDIR/run.log"

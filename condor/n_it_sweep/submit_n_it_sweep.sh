@@ -8,8 +8,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 THESIS_REPO="${THESIS_REPO:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
-OUTDIR="${OUTDIR:-$THESIS_REPO/results/${RUN_ID}_n_it_sweep}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/${RUN_ID}_n_it_sweep}"
 
 mkdir -p "$OUTDIR"
 mkdir -p "$SCRIPT_DIR/logs"

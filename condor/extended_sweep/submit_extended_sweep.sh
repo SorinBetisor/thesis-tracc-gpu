@@ -9,16 +9,17 @@
 #   ./submit_extended_sweep.sh --gpu-only   # GPU only
 #
 # Results land in:
-#   $THESIS_REPO/results/<RUN_ID>_extended/        (CPU)
-#   $THESIS_REPO/results/<RUN_ID>_extended_cuda/   (GPU)
+#   $THESIS_RESULTS_ROOT/<RUN_ID>_extended/        (CPU)
+#   $THESIS_RESULTS_ROOT/<RUN_ID>_extended_cuda/   (GPU)
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 THESIS_REPO="${THESIS_REPO:-$(cd "$SCRIPT_DIR/../.." && pwd)}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 RUN_ID="${RUN_ID:-$(date +%Y%m%d_%H%M%S)}"
 
-CPU_OUTDIR="$THESIS_REPO/results/${RUN_ID}_extended"
-GPU_OUTDIR="$THESIS_REPO/results/${RUN_ID}_extended_cuda"
+CPU_OUTDIR="$THESIS_RESULTS_ROOT/${RUN_ID}_extended"
+GPU_OUTDIR="$THESIS_RESULTS_ROOT/${RUN_ID}_extended_cuda"
 
 SUBMIT_CPU=true
 SUBMIT_GPU=true

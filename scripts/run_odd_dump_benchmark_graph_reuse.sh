@@ -8,7 +8,8 @@ export LD_LIBRARY_PATH="/data/alice/sbetisor/spack/install/linux-zen/intel-oneap
 CPU_BIN="${CPU_BIN:-/data/alice/sbetisor/traccc/build/bin/traccc_benchmark_resolver}"
 GPU_BIN="${GPU_BIN:-/data/alice/sbetisor/traccc/build/bin/traccc_benchmark_resolver_cuda}"
 DUMPS_DIR="${DUMPS_DIR:-/user/sbetisor/thesis/sorin-thesis-work/data/odd_muon_dumps/20260406}"
-OUTDIR="${OUTDIR:-/user/sbetisor/thesis/sorin-thesis-work/results/$(date +%Y%m%d_%H%M%S)_odd_muon_graph_reuse}"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
+OUTDIR="${OUTDIR:-$THESIS_RESULTS_ROOT/$(date +%Y%m%d_%H%M%S)_odd_muon_graph_reuse}"
 GPU_EXTRA_ARGS="${GPU_EXTRA_ARGS:---reuse-eviction-graph}"
 
 mkdir -p "$OUTDIR"

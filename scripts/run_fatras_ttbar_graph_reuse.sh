@@ -8,6 +8,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 THESIS_REPO="$(cd "$SCRIPT_DIR/.." && pwd)"
+THESIS_RESULTS_ROOT="${THESIS_RESULTS_ROOT:-$HOME/data-work/results}"
 DATA_ROOT="${DATA_ROOT:-/data/alice/sbetisor/traccc/data/odd}"
 PILEUP_LEVELS="${PILEUP_LEVELS:-300 400 500 600}"
 N_EVENTS="${N_EVENTS:-5}"
@@ -28,7 +29,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 RUN_ID="$(date +%Y%m%d_%H%M%S)_fatras_real_graph_reuse"
-OUTDIR="$THESIS_REPO/results/$RUN_ID"
+OUTDIR="$THESIS_RESULTS_ROOT/$RUN_ID"
 mkdir -p "$OUTDIR"
 
 CONVERTER="$SCRIPT_DIR/convert_fatras_ckf_csv_to_dumps.py"
