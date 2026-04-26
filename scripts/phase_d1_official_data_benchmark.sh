@@ -17,6 +17,13 @@ set -euo pipefail
 . /data/alice/sbetisor/spack/share/spack/setup-env.sh
 spack env activate traccc
 
+# traccc_seq_example has a stale RPATH that resolves libstdc++ to the
+# spack view's older lib (3.4.30); force-load the lib64/3.4.32 variant.
+SPACK_VIEW=/data/alice/sbetisor/spack/var/spack/environments/traccc/.spack-env/._view/3une3gz6c3dhaus2ggcji3vznrc4qrll
+if [[ -f "$SPACK_VIEW/lib64/libstdc++.so.6.0.32" ]]; then
+  export LD_PRELOAD="$SPACK_VIEW/lib64/libstdc++.so.6.0.32"
+fi
+
 export CUDA_HOME="${CUDA_HOME:-/usr/local/cuda-12.5}"
 export PATH="$CUDA_HOME/bin:$PATH"
 export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
