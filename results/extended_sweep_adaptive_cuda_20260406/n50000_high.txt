@@ -1,2 +1,0 @@
-terminate called after throwing an instance of 'std::runtime_error'
-  what():  /data/alice/sbetisor/traccc/device/cuda_utils/src/stream.cpp:83 Failed to execute: cudaStreamSynchronize(m_impl->m_stream) (an illegal memory access was encountered)

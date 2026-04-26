@@ -1,4 +1,0 @@
-pileup mean_n_candidates cpu_mean_ms gpu_no_reuse_ms gpu_reuse_ms reuse_speedup hash_all_match
-400 2437.667 27.461500 18.962300 16.564233 1.145 true
-500 3109.667 37.828567 20.161567 20.036267 1.006 true
-600 3954.667 54.037600 26.285900 26.138700 1.006 true

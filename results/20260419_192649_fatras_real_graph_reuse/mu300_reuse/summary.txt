@@ -1,3 +1,0 @@
-event dump_file n_candidates cpu_time_ms gpu_resolver_ms cpu_hash gpu_hash hash_match
-event_000000000 /user/sbetisor/thesis/sorin-thesis-work/results/20260419_192649_fatras_real_graph_reuse/dumps_mu300/event_000000000.json 2030 20.9155 13.9346 3481676368896135240 10014768257344734279 true
-event_000000001 /user/sbetisor/thesis/sorin-thesis-work/results/20260419_192649_fatras_real_graph_reuse/dumps_mu300/event_000000001.json 1681 16.2632 11.5093 3642091393784481042 8676001173953726041 true
