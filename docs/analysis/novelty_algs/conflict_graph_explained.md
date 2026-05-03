@@ -1,11 +1,12 @@
-# Tier 2c — Plain-English Explanation
+# GPU Ambiguity Resolution — MIS and Jones–Plassmann: Plain-English Explanation
 
 **Prepared:** 2026-04-22
 **Purpose:** a plain-English companion to the more technical
-[`conflict_graph_design.md`](conflict_graph_design.md) and
-[`conflict_graph_results.md`](conflict_graph_results.md). This document
-explains, without GPU jargon, how the two Tier 2c algorithms work and how
-they compare to the CPU greedy baseline on real and synthetic data.
+`conflict_graph_design.md` (as-built kernel and pipeline design) and
+`conflict_graph_results.md` (full measurement protocol and numerical tables),
+both of which are attached alongside this document. This document explains,
+without GPU jargon, how the two algorithms work and how they compare
+to the CPU greedy baseline on real and synthetic data.
 
 ---
 
@@ -193,7 +194,7 @@ Three things to notice:
 
 ---
 
-## 4. The big-picture story
+## 4. Summary across regimes
 
 | Regime | Matches CPU exactly? | Fastest backend | Speedup vs CPU |
 |---|---|---|---|
@@ -204,20 +205,17 @@ Three things to notice:
 | Synthetic low-density, n ≥ 5000 | JP overlap 0.91–0.97 | JP / MIS | 2.8× (n=5000) – 9.3× (n=10000) |
 | Synthetic medium-density, n ≥ 5000 | Overlap 0.27–0.88 (stress test) | MIS | 2.0× – 2.4× |
 
-**Bottom line:** on the data that actually matters for the thesis —
-real physics pile-up events — **Jones–Plassmann produces the same
-answers as CPU greedy while being about 1.8× – 3.5× faster** than the
-single-threaded CPU baseline, and **1.5× – 1.8× faster than even the
-existing CUDA baseline** (which was already faster than CPU).
+**Bottom line:** on real physics pile-up events — the regime that
+matters — **Jones–Plassmann produces the same answers as CPU greedy
+while being about 1.8× – 3.5× faster** than the single-threaded CPU
+baseline, and **1.5× – 1.8× faster than the existing CUDA baseline**
+(which was already faster than CPU).
 
-This is the Tier 2c result the thesis leads with. MIS is kept as an
-A/B option to show that the round-count choice matters, and to
-demonstrate a graceful degradation pattern under adversarial stress;
-JP is the recommended default.
+MIS is included as an A/B comparison to show that the round-count
+choice matters and to demonstrate a graceful degradation pattern under
+adversarial stress. JP is the recommended default for real detector
+geometries.
 
-Raw numbers underlying this table:
-
-- CPU timings: `results/20260422_171612_conflict_graph/cpu_timings.txt`
-- GPU Fatras: `results/20260422_171612_conflict_graph/fatras_sweep.txt`
-- GPU ODD: `results/20260422_171612_conflict_graph/odd_sweep.txt`
-- GPU synthetic: `results/20260422_171612_conflict_graph/synthetic_sweep.txt`
+Raw benchmark outputs (per-event timing files, JSON metadata, and per-iteration
+batch-size CSVs) are available on request. The measurement protocol and full
+tables are in the companion document `conflict_graph_results.md`.

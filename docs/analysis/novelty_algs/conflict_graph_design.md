@@ -1,7 +1,7 @@
-# Explicit Conflict Graph — Tier 2c As-Built Design
+# Explicit Conflict Graph for GPU Ambiguity Resolution — As-Built Design
 
 **Prepared:** 2026-04-22
-**Branch:** `thesis-novelty-conflict-graph` (grown from `thesis-novelty-parallel-batch`)
+**Branch:** `thesis-novelty-conflict-graph`
 **Status:** Implemented. Two algorithms (Luby-style MIS and Jones–Plassmann
 greedy colouring, run as a one-round A/B) are wired through
 `greedy_ambiguity_resolution_algorithm` on CUDA, are exposed on the harness
@@ -10,51 +10,37 @@ reference baseline across synthetic, ODD muon and Fatras ttbar pile-up dumps.
 Runtime numbers and correctness are reported in `conflict_graph_results.md`.
 
 > **2026-04-22 revision — "as-built".** This document supersedes the original
-> design-only note. Sections 1–6 kept the motivation and the bookkeeping
-> argument; Sections 3, 4 and 7 were rewritten to match the merged code.
-> In particular: (i) the COO→CSR step uses `thrust::sort_by_key` +
-> `thrust::lower_bound` directly and not a hand-written segmented scan;
-> (ii) both Luby MIS and Jones–Plassmann are implemented as variants of a
-> single *round* (same `propose`/`finalize` kernels, MIS iterates up to 32
-> rounds, JP exits after one); (iii) Stage 1 compaction replaces the
-> `rearrange_tracks` pipeline in graph mode — the prefix-removal invariant
-> from Tier 2a is intentionally relaxed here.
+> design-only note. In particular: (i) the COO→CSR step uses
+> `thrust::sort_by_key` + `thrust::lower_bound` directly and not a
+> hand-written segmented scan; (ii) both Luby MIS and Jones–Plassmann are
+> implemented as variants of a single *round* (same `propose`/`finalize`
+> kernels, MIS iterates up to 32 rounds, JP exits after one); (iii) Stage 1
+> compaction replaces the `rearrange_tracks` pipeline in graph mode.
 
-Cross-references:
-- Companion algorithm in the same thesis chapter:
-  `parallel_batch_greedy_design.md` (Tier 2a, also on this branch via
-  `--parallel-batch`).
-- Original proposal:
-  [`novelty_improvements.md`](novelty_improvements.md) Sec. 4c.
+Cross-reference:
 - Runtime evidence responding to this design: `conflict_graph_results.md`.
 
 ---
 
 ## 1. Why this document exists
 
-Parallel Batch Greedy (PBG) uses an **implicit** conflict graph:
+The baseline CUDA greedy resolver removes **one track per outer iteration**:
+it finds the single worst track, evicts it, updates bookkeeping, and repeats.
+This is a sequential structure that limits GPU parallelism — each outer
+iteration uses essentially one block of work.
 
-- Nodes are the tracks in `sorted_ids` that are still accepted.
-- Edges are "these two tracks share at least one measurement whose
-  `n_accepted_tracks_per_measurement > 1`".
-- The edges are never materialized; they are probed on the fly through the
-  `claimed_by[]` array.
+A natural GPU-friendly alternative is to find a **maximal independent set**
+of removable tracks per outer iteration: a set of mutually non-conflicting
+worst tracks that can all be evicted simultaneously, in parallel. To find
+such a set efficiently we need explicit access to each track's conflict
+neighbourhood, which requires **materializing the conflict graph**.
 
-This is cheap and fits the existing kernel pipeline, but it has two
-structural limits:
-
-1. **Single-color pick per iteration.** Every PBG outer iteration produces
-   *one* independent set (the conflict-free prefix). A single graph-colouring
-   pass can produce χ independent sets in one shot, where χ is the chromatic
-   number of the conflict sub-graph. For the conflict densities we care
-   about χ is small.
-2. **No global view.** Algorithms like Jones–Plassmann colouring and Luby
-   MIS need neighbour-set access; PBG never materializes it.
-
-Tier 2c **materializes** the conflict graph once per outer iteration and
-runs a classical parallel graph algorithm over it. The question the
-companion results document answers is: *in which regimes does paying the
-extra graph construction cost actually pay off?*
+This document describes the design: build the conflict graph once per outer
+iteration (COO → CSR, Sections 2–3) and run one of two classical parallel
+graph algorithms over it (MIS or Jones–Plassmann, Section 4). The question
+the companion results document answers is: *in which regimes does paying the
+extra graph-construction cost pay off relative to the one-track-at-a-time
+baseline?*
 
 ---
 
@@ -159,11 +145,10 @@ rounds for the inputs we care about (see `conflict_graph_results.md` Sec.
 ### 3c. Rebuild cadence
 
 The conflict graph is rebuilt **every outer iteration**. Incremental
-updates (tracked in Sec. 5 of the pre-merge design note) were not
-implemented: for the Fatras pile-up inputs the entire graph build + CSR
-step measures at 0.3–0.5 ms per call, well below the savings from
-collapsing PBG iterations, and incremental bookkeeping is not on the
-critical path.
+updates were not implemented: for the Fatras pile-up inputs the entire
+graph build + CSR step measures at 0.3–0.5 ms per call, well below the
+savings from collapsing the outer-iteration count, and incremental
+bookkeeping is not on the critical path.
 
 ---
 
@@ -224,9 +209,10 @@ of every neighbourhood. We then call `apply_graph_removals` to flip
 per-measurement bookkeeping for every vertex in `I`, Stage 1 compaction
 drops them from `sorted_ids`, and the outer loop continues.
 
-Determinism: tie-breaks on `(π(v), v)` lexicographically; the graph is
-byte-identical to what PBG probes implicitly, so the overall resolver
-output is fully deterministic modulo the choice of graph algorithm.
+Determinism: tie-breaks on `(π(v), v)` lexicographically, where `π(v)`
+is the same worst-first priority key used by the CPU greedy baseline, so
+the overall resolver output is fully deterministic modulo the choice of
+graph algorithm.
 
 Reference: Luby, M. (1986). *A simple parallel algorithm for the maximal
 independent set problem.*
@@ -277,19 +263,18 @@ better default on our real-data regime (see Sec. 4 of
 | Fatras μ=300..600 (real pile-up) | **JP** | low-density conflict graph, one JP round removes ~40–100 tracks; MIS spends 15–23 rounds for similar quality |
 | Low-density synthetic | JP | same reasoning; JP is 1.2–1.5× faster than MIS for equal overlap |
 | High-density synthetic (n ≥ 2000) | MIS | JP's single-round semantics leaves too many `REMOVED_NEIGHBOR`s undecided, forcing extra outer iterations; MIS converges in ~7–15 inner rounds and beats JP on wall clock |
-| `n_candidates ≤ 100` (ODD muons) | ≈ tie | graph build dominates; both paths are within PBG ± 5% |
+| `n_candidates ≤ 100` (ODD muons) | ≈ tie | graph build dominates; both paths are within ± 5% of each other |
 
 ---
 
 ## 5. Stage 1 compaction — why the rearrange pipeline is bypassed
 
-Tier 2a preserved the baseline's "removed tracks occupy a contiguous
-tail of `sorted_ids`" invariant so that the downstream
-`rearrange_tracks` + `update_status` pipeline could stay untouched. In
-Tier 2c the MIS (or JP round) is not in general a prefix of the
-sorted worst-first ordering — a locally-worst vertex halfway up the
-sorted list is still `IN_MIS`, even though higher-rank vertices are not.
-Shoehorning that into a prefix-removal kernel has two failure modes:
+The baseline's `rearrange_tracks` + `update_status` pipeline assumes
+"removed tracks occupy a contiguous tail of `sorted_ids`". The MIS (or
+JP round) is not in general a prefix of the sorted worst-first ordering
+— a locally-worst vertex halfway up the sorted list is still `IN_MIS`,
+even though higher-rank vertices are not. Shoehorning that into the
+prefix-removal kernel has two failure modes:
 
 1. The baseline insertion-sort computes wrong shifted indices when there
    are "gaps" inside the live region, causing out-of-bounds writes in
@@ -297,8 +282,7 @@ Shoehorning that into a prefix-removal kernel has two failure modes:
 2. The single-block bitonic sort inside `sort_updated_tracks` assumes
    ≤ 512 updated entries; a graph-mode batch easily exceeds that.
 
-Both symptoms are documented in the commit log and in
-`parallel_batch_greedy_design.md` Sec. 4.1–4.3. The Tier 2c pipeline
+Both symptoms are documented in the commit log. The graph-mode pipeline
 replaces the whole tail with a generic **keep-mask → inclusive scan →
 scatter → global sort** path:
 
@@ -353,7 +337,7 @@ Source:
 
 ### 6b. `update_rel_shared`
 
-Identical to the Tier 2a kernel: one warp per updated track, recomputes
+One warp per updated track; recomputes
 `rel_shared[t] = float(n_shared[t]) / float(n_meas[t])`. Survivors whose
 `n_shared` fell below threshold are now candidates for `is_removed` in
 later outer iterations (or survive to completion).
@@ -362,24 +346,17 @@ later outer iterations (or survive to completion).
 
 ## 7. Host-side orchestration — what the outer loop actually runs
 
-The dispatcher in
-`greedy_ambiguity_resolution_algorithm.cu` chooses between three paths
-based on `set_conflict_graph_mode()` and `set_parallel_batch_mode()`:
+The graph mode is selected via `set_conflict_graph_mode()` in
+`greedy_ambiguity_resolution_algorithm.cu`. Unlike the baseline (which
+captures a fixed CUDA graph once per resolver call), the graph mode is
+**not captured into a CUDA graph**, because the COO→CSR conversion runs
+host-side Thrust calls with data-dependent sizes. Each outer iteration is
+a sequence of direct kernel launches interleaved with `thrust::*`,
+separated by exactly two `cudaStreamSynchronize` calls per iteration
+(one after `build_conflict_coo` to read `n_edges`, one at the end to
+read `batch_size` and `max_shared`).
 
-1. **Baseline**: `remove_tracks<<<1,512>>>` + captured CUDA graph.
-   Unchanged from upstream.
-2. **PBG (Tier 2a)**: `claim → confirm → apply → update_rel_shared → …`,
-   captured into a CUDA graph once per resolver call.
-3. **Graph (Tier 2c, this document)**: not captured into a CUDA graph,
-   because the COO→CSR conversion runs host-side Thrust calls with
-   data-dependent sizes. Each outer iteration is a sequence of direct
-   kernel launches interleaved with `thrust::*`, separated by exactly two
-   `cudaStreamSynchronize` calls per iteration (one after
-   `build_conflict_coo` to read `n_edges`, one at the end to read
-   `batch_size` and `max_shared`).
-
-The device-side buffer layout is shared with the other modes: MIS /
-graph-specific scratch (`mis_priority_buffer`, `mis_active_buffer`,
+Graph-specific device scratch (`mis_priority_buffer`, `mis_active_buffer`,
 `mis_state_buffer`, `coo_src_buffer`, `coo_dst_buffer`, `row_ptr_buffer`,
 `edge_count_device`, `any_undecided_device`) is allocated once before the
 loop starts with sizes bounded by Sec. 2.
@@ -425,22 +402,20 @@ benchmark invocation produces the A/B numbers that feed
 
 ---
 
-## 9. Summary for the thesis
 
-Tiers 2a and 2c are two points on a single axis:
+## 9. Design summary
 
-| Axis | Tier 2a (PBG) | Tier 2c (explicit graph) |
-|---|---|---|
-| Graph representation | implicit, probed through `claimed_by[]` | explicit CSR, rebuilt every outer iteration |
-| Output per outer iteration | conflict-free *prefix* of sorted worst-first | MIS (Luby) or first JP colour class |
-| Batch shape | contiguous tail of `sorted_ids` | arbitrary per-vertex set |
-| Downstream pipeline | unchanged `rearrange_tracks` | Stage 1 compaction + `thrust::sort` |
-| Determinism tie-break | `sorted_ids` rank | `sorted_ids` rank (same) |
-| Extra memory | `claimed_by[|M_A|] + batch_ids[W]` | `row_ptr[|V|+1] + col_idx[|E|] + mis_state[|V|]` |
-| When it wins | conflict graph already has large independent prefixes | conflict graph is dense or PBG iteration-bound |
-| Numbers | `parallel_batch_greedy_results.md` | `conflict_graph_results.md` |
+| Property | Value |
+|---|---|
+| Graph representation | Explicit CSR, rebuilt every outer iteration |
+| Output per outer iteration | MIS (Luby, up to 32 rounds) or first JP colour class (1 round) |
+| Batch shape | Arbitrary per-vertex set — not required to be a sorted prefix |
+| Downstream compaction | Keep-mask → inclusive scan → scatter → `thrust::sort` |
+| Determinism tie-break | `sorted_ids` rank (same worst-first key as CPU greedy) |
+| Extra device memory | `row_ptr[|V|+1] + col_idx[|E|] + mis_state[|V|]` (~2 MB on Fatras μ=600) |
+| Target regime | Sparse conflict graphs (real detector pile-up, μ ≥ 200) |
+| Numerical evidence | `conflict_graph_results.md` |
 
-The chapter presents both algorithms measured under the same harness,
-with the same CPU reference, on the same input dumps — so the thesis can
-claim *independently reproducible* before/after numbers for each
-algorithmic stage of the Tier 2 programme.
+Both MIS and JP are measured under the same harness, with the same CPU
+reference, on the same serialised input dumps — ensuring independently
+reproducible numbers for each algorithm variant.
