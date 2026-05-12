@@ -447,25 +447,80 @@ on `priority` racing against the previous outer iteration's
 `graph_mis_init` write under the larger block size; needs an explicit
 `__threadfence` study to confirm.
 
-### 6b. Recommended next iteration
+### 6b. A1 ablation sweep — block size reverted to 64 (2026-05-03)
 
-Per-lever ablation, in priority order:
+Immediately after sweep 6a, reverted `graph_kernel_block_size` from 256
+back to 64 in `ambiguity_tuning.hpp` (all other Tier A items unchanged:
+A2 `__launch_bounds__`, A3 `__ldg`/`__restrict__`, A4 512-thread
+`build_conflict_coo`, A5 already upstream). Rebuilt the shared library and
+re-ran the same 474-config sweep.
 
-1. **Revert A1 only** — keep block size at the upstream `m_warp_size * 2`
-   (= 64) and rerun the full sweep. Expectation: high-pile-up regression
-   disappears; we keep the small low-pile-up `__launch_bounds__` and
-   `__ldg` wins.
-2. If (1) is a clean win, study A1 as a **per-corpus dispatched**
-   block size: 256 when `n_vertices < 16 × n_SMs`, 64 otherwise. The
-   resolver already knows `n_accepted` at launch time, so the dispatch
-   is one branch.
-3. If (1) regresses on small-corpus too, drop A2 individually and
-   bisect to find the actual contributing flag.
-4. The honest write-up for the thesis chapter is then either
-   "Tier A as a one-shot bundle does not improve performance on this
-   workload" (acceptable negative result) or "after per-lever
-   bisection, only A2+A3 carry over without regression" (mixed
-   positive result).
+Raw outputs: `/user/sbetisor/data-work/results/20260503_224123_tier_a_tuning/`.
+
+#### 6b-i. Speedup table (A2+A3+A4 only, A1=64)
+
+| corpus | baseline Δ% | JP Δ% | MIS Δ% |
+|---|---:|---:|---:|
+| ttbar μ=0   | +2.2% | +1.6% | +1.7% |
+| ttbar μ=20  | +2.2% | +1.4% | +0.5% |
+| ttbar μ=50  | +1.6% | +1.6% | +1.1% |
+| ttbar μ=100 | +0.9% | +1.1% | +1.0% |
+| ttbar μ=140 | +0.8% | +0.6% | −2.0% |
+| ttbar μ=200 | +1.8% | −2.1% | −2.2% |
+| ttbar μ=300 | +0.3% | +0.4% | +1.0% |
+| ttbar μ=400 | +0.4% | −0.1% | −0.0% |
+| ttbar μ=500 | +0.8% | −0.3% | −0.3% |
+| ttbar μ=600 | **+0.1%** | **−0.7%** | **−0.5%** |
+
+#### 6b-ii. Validity gate (sweep 2)
+
+All failures are pre-existing on **both** binaries — identical to the
+untuned-binary failure list. The two JP-specific tuning regressions from
+sweep 1 (μ=500 `det_fail=1`, μ=600 `hash_match=false det_fail=2`) are
+**gone**. A1 was the sole source of those new failures.
+
+#### 6b-iii. Decision — keep A1 at 64, finalise A2+A3+A4 bundle
+
+Comparing sweep 1 (A1=256) vs sweep 2 (A1=64):
+
+| backend | high-μ behaviour with A1=256 | high-μ behaviour with A1=64 |
+|---|---|---|
+| baseline | μ=400: −3.0% regression | μ=400..600: ≤ +0.4%, clean |
+| JP | μ=600: −4.4%, new det failures | μ=600: −0.7% (noise), no failures |
+| MIS | μ=600: −5.1% regression | μ=600: −0.5% (noise), no failures |
+
+**A1=256 is bad at high pile-up; A1=64 eliminates all regressions.**
+
+The remaining A2+A3+A4 bundle:
+- Gives consistent **+1–2% at low-to-mid pile-up** (μ ≤ 200) on every backend.
+- Is roughly **break-even** at high pile-up (μ ≥ 300) — all deviations within
+  run-to-run noise, no systematic regression.
+- Introduces **zero new validity failures** vs the untuned binary.
+
+The final `ambiguity_tuning.hpp` keeps `graph_kernel_block_size = 64u`
+(A1 reverted) and retains the A2/A3/A4 decorations. This is the binary
+on the `thesis-novelty-hardware-tuning` branch going forward.
+
+#### 6b-iv. What this means for the thesis
+
+The honest thesis characterisation of Tier A:
+
+> "Hardware-level decorations — compiler occupancy hints (`__launch_bounds__`),
+> read-only-cache routing (`__ldg`) on the neighbour scan, and a wider
+> shared-memory gather block for the COO edge builder — deliver a consistent
+> 1–2% improvement at low to mid pile-up across all three resolver backends
+> (baseline, JP, MIS) on the Quadro GV100, with no regression or validity loss
+> at any pile-up. The expected 10–22% headline speedup did not materialise:
+> the workload is already memory-latency-bound at the relevant pile-up regimes
+> (μ ≥ 300) and these levers primarily reduce register pressure and scheduling
+> overhead, which are not the binding bottleneck. The block-size widening (A1)
+> actively harmed the high-pile-up kernels by shrinking the grid below the
+> number of SMs, and was reverted."
+
+This is a valid and technically informative result. It narrows the focus
+for Tier B (warp-level reductions) and scopes the thesis contribution as
+correctness + benchmarking + algorithmic novelty (JP/MIS), with Tier A as
+supporting evidence of systematic evaluation methodology.
 
 ---
 

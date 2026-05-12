@@ -55,10 +55,11 @@ from "valid but different". Being non-identical to the CPU reference does
   `TRACCC_BUILD_CUDA=ON`.
 - Harness binary: `traccc_benchmark_resolver_cuda`.
 
-Reproduction: every point in Sec. 3 below is the mean of 5 timed repeats
-with 2 warmup iterations; seed is fixed; the same harness invocation emits
-baseline, MIS and JP metrics in a single run so numbers are directly
-comparable.
+Reproduction: the unified Fatras sweep in Sec. 3a-i uses 10 timed repeats,
+3 warmup iterations, and 5 determinism runs. Older MIS/JP A/B sweeps use the
+repeat counts stated in their raw result directories. The same harness
+invocation emits baseline and JP metrics in a single run for Sec. 3a-i, so
+numbers are directly comparable.
 
 ---
 
@@ -93,7 +94,7 @@ metric blocks.
 
 ### 2c. Metrics
 
-Timing, mean over 5 repeats:
+Timing:
 - `time_ms_mean`, `time_ms_std`, `time_ms_median`, `time_ms_p95`
   (GPU-only resolver region).
 
@@ -103,7 +104,10 @@ Quality (both graph backends compared against the CPU greedy reference):
   FNV-1a 64-bit hash of the sorted pattern string; a `true` value means
   criteria 1, 2, and 3 are simultaneously satisfied and the selection is
   additionally CPU-identical.
-- `track_overlap_vs_cpu = |S_gpu ∩ S_cpu| / |S_cpu|`.
+- `track_overlap_vs_cpu = |S_gpu ∩ S_cpu| / |S_cpu|`, a one-way
+  CPU-reference overlap retained for continuity with earlier scripts.
+- `selected_jaccard = |S_gpu ∩ S_cpu| / |S_gpu ∪ S_cpu|`, plus explicit
+  CPU-only and GPU-only selected-track counts in newer benchmark output.
 - `duplicate_rate_post`.
 - `n_selected`.
 
@@ -122,23 +126,26 @@ Graph-mode-specific:
 
 #### 3a-i. JP vs baseline vs CPU — full crossover picture (μ=0–600)
 
-Mean per-event resolver time across all events per pile-up point, from the
-unified three-backend sweep (2026-04-26, 79 FATRAS events). This sweep was
-run on the same hardware and with the same harness for all three backends,
-making the CPU/GPU comparison directly fair.
+Mean per-event resolver latency across all events per pile-up point, from the
+unified three-backend sweep (2026-04-26, 79 FATRAS events). This is a
+single-event latency comparison against the existing single-threaded CPU
+reference, not a full hardware-throughput comparison. Speedup columns are
+ratios of displayed mean times: `CPU / JP` and `baseline / JP`.
 
-| μ | n cand | CPU (ms) | baseline (ms) | **JP (ms)** | JP / CPU | JP / baseline |
-|---:|---:|---:|---:|---:|---:|---:|
-| 0 | 66 | 0.39 | 1.86 | 2.53 | 0.16× | 0.76× |
-| 20 | 147 | 0.96 | 2.12 | 2.66 | 0.37× | 0.83× |
-| 50 | 294 | 2.06 | 2.90 | 3.71 | 0.56× | 0.81× |
-| 100 | 563 | 4.30 | 4.11 | 4.74 | 0.92× | 0.88× |
-| 140 | 777 | 6.13 | 5.04 | **4.96** | **1.25×** | **1.03×** |
-| 200 | 1 115 | 9.63 | 7.48 | **7.45** | **1.37×** | **1.06×** |
-| 300 | 1 703 | 16.07 | 10.72 | **10.99** | **1.65×** | **1.10×** |
-| 400 | 2 438 | 27.31 | 17.13 | **10.08** | **2.72×** | **1.71×** |
-| 500 | 3 110 | 37.40 | 20.79 | **11.38** | **3.30×** | **1.84×** |
-| 600 | 3 955 | 53.42 | 27.34 | **15.78** | **3.54×** | **1.78×** |
+| μ | n cand | CPU (ms) | baseline (ms) | **JP (ms)** | CPU / JP | baseline / JP | JP hash |
+|---:|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 66 | 0.39 | 1.86 | **2.53** | 0.16× | 0.74× | 10/10 |
+| 20 | 147 | 0.96 | 2.12 | **2.66** | 0.36× | 0.80× | 10/10 |
+| 50 | 294 | 2.06 | 2.90 | **3.71** | 0.55× | 0.78× | 10/10 |
+| 100 | 563 | 4.30 | 4.11 | **4.74** | 0.91× | 0.87× | 10/10 |
+| 140 | 776 | 6.13 | 5.04 | **4.96** | **1.24×** | **1.02×** | 10/10 |
+| 200 | 1 115 | 9.63 | 7.48 | **7.45** | **1.29×** | **1.00×** | 10/10 |
+| 300 | 1 703 | 16.07 | 10.72 | **10.99** | **1.46×** | 0.97× | 9/10 |
+| 400 | 2 438 | 27.31 | 17.13 | **10.08** | **2.71×** | **1.70×** | 3/3 |
+| 500 | 3 110 | 37.40 | 20.79 | **11.38** | **3.29×** | **1.83×** | 3/3 |
+| 600 | 3 955 | 53.42 | 27.34 | **15.78** | **3.39×** | **1.73×** | 3/3 |
+
+Mechanical check: regenerate this block from `/user/sbetisor/data-work/results/20260426_190931_unified_three_backend_sweep/per_corpus_aggregate.json` (and cross-check event means against `summary.tsv`) with `/user/sbetisor/thesis/sorin-thesis-work/scripts/audit_unified_fatras_3a_i.py`.
 
 Key observations:
 
@@ -147,11 +154,12 @@ Key observations:
 - **Crossover at μ ≈ 140 (n ≈ 777)**: JP and the baseline both pull ahead
   of CPU for the first time. JP and baseline are essentially tied here
   (4.96 ms vs 5.04 ms).
-- **μ ≥ 200 (n ≥ 1 115)**: JP pulls ahead of the baseline and the gap
-  widens steadily. At μ=600 JP is **3.5× faster than CPU and 1.8× faster
-  than the baseline**.
-- `hash_match = true` and `duplicate_rate_post = 0` on every event in this
-  sweep, including all μ=0..200 events.
+- **μ ≥ 400 (n ≥ 2 438)**: JP pulls clearly ahead of the baseline in this
+  single-event latency benchmark. At μ=600 JP is **3.4× faster than CPU and
+  1.7× faster than the baseline** by ratio of mean times.
+- JP is selection-identical to the CPU reference on 78/79 Fatras events in
+  this sweep. The one non-identical event is at μ=300 and still has high
+  one-way overlap; μ=0..200 and μ=400..600 are hash-identical throughout.
 
 #### 3a-ii. MIS vs JP — high pile-up detail (μ=300–600)
 

@@ -77,7 +77,7 @@ echo
 # ----------------------------------------------------------------------------
 SUMMARY="$OUT/summary.tsv"
 {
-    printf 'binary\tbackend\tcorpus\tevent\tn_selected\ttime_ms_mean\ttime_ms_median\ttime_ms_p95\thash_match\toverlap_vs_cpu\tdup_post\tdet_pass\tdet_fail\n'
+    printf 'binary\tbackend\tcorpus\tevent\tn_selected\ttime_ms_mean\tlatency_ms_per_event\tsingle_event_equiv_events_per_sec\ttime_ms_median\ttime_ms_p95\thash_match\toverlap_vs_cpu\tselected_jaccard\tcpu_only_selected\tgpu_only_selected\tn_selected_delta\tdup_post\tdet_pass\tdet_fail\n'
 } > "$SUMMARY"
 
 run_event () {
@@ -99,7 +99,7 @@ run_event () {
     set -e
 
     if [[ $rc -ne 0 ]]; then
-        printf '%s\t%s\t%s\t%s\tERR\t-1\t-1\t-1\tfalse\t-1\t-1\t0\t0\n' \
+        printf '%s\t%s\t%s\t%s\tERR\t-1\t-1\t-1\t-1\t-1\tfalse\t-1\t-1\t-1\t-1\t0\t-1\t0\t0\n' \
             "$binary_label" "$backend_label" "$corpus_name" "$event_name" \
             >> "$SUMMARY"
         echo "  FAIL  $binary_label/$backend_label  $corpus_name/$event_name (rc=$rc)"
@@ -118,15 +118,27 @@ run_event () {
     # The per-backend timing line is one line:
     #   <prefix>time_ms_mean=X time_ms_std=Y time_ms_median=Z time_ms_p95=W
     # so we anchor on the prefix-bearing token then extract each field.
-    local n_sel mean med p95 hm overlap dup timing_line
+    local n_sel mean latency eps med p95 hm overlap jaccard cpu_only gpu_only delta dup timing_line
     n_sel=$(grep -oE "^${prefix}n_selected=[0-9]+" "$raw" | head -1 | cut -d= -f2)
     timing_line=$(grep -E "^${prefix}time_ms_mean=" "$raw" | head -1)
     mean=$(echo "$timing_line" | grep -oE "time_ms_mean=[0-9.eE+-]+"   | cut -d= -f2)
     med=$( echo "$timing_line" | grep -oE "time_ms_median=[0-9.eE+-]+" | cut -d= -f2)
     p95=$( echo "$timing_line" | grep -oE "time_ms_p95=[0-9.eE+-]+"    | cut -d= -f2)
+    latency=$(grep -oE "^${prefix}latency_ms_per_event=[0-9.eE+-]+" "$raw" | head -1 | cut -d= -f2)
+    eps=$(grep -oE "^${prefix}single_event_equiv_events_per_sec=[0-9.eE+-]+" "$raw" | head -1 | cut -d= -f2)
     hm=$(   grep -oE "^${prefix}hash_match=(true|false)"             "$raw" | head -1 | cut -d= -f2)
     overlap=$(grep -oE "^${prefix}track_overlap_vs_cpu=[0-9.eE+-]+"  "$raw" | head -1 | cut -d= -f2)
+    jaccard=$(grep -oE "^${prefix}selected_jaccard=[0-9.eE+-]+"       "$raw" | head -1 | cut -d= -f2)
+    cpu_only=$(grep -oE "^${prefix}cpu_only_selected_count=[0-9]+"    "$raw" | head -1 | cut -d= -f2)
+    gpu_only=$(grep -oE "^${prefix}gpu_only_selected_count=[0-9]+"    "$raw" | head -1 | cut -d= -f2)
+    delta=$(grep -oE "^${prefix}n_selected_delta=-?[0-9]+"            "$raw" | head -1 | cut -d= -f2)
     dup=$(  grep -oE "^${prefix}duplicate_rate_post=[0-9.eE+-]+"     "$raw" | head -1 | cut -d= -f2)
+    [[ -z "$latency" ]] && latency="$mean"
+    [[ -z "$eps" && -n "$mean" ]] && eps=$(awk -v t="$mean" 'BEGIN { if (t > 0) printf "%.8g", 1000.0/t; else print "NA" }')
+    [[ -z "$jaccard" ]] && jaccard="NA"
+    [[ -z "$cpu_only" ]] && cpu_only="NA"
+    [[ -z "$gpu_only" ]] && gpu_only="NA"
+    [[ -z "$delta" ]] && delta="NA"
 
     # Determinism block format (one line per backend):
     #   det_<label>_pass=N det_<label>_fail=M
@@ -136,10 +148,12 @@ run_event () {
     [[ -z "$det_pass" ]] && det_pass=0
     [[ -z "$det_fail" ]] && det_fail=0
 
-    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
         "$binary_label" "$backend_label" "$corpus_name" "$event_name" \
-        "${n_sel:-NA}" "${mean:-NA}" "${med:-NA}" "${p95:-NA}" \
-        "${hm:-NA}" "${overlap:-NA}" "${dup:-NA}" \
+        "${n_sel:-NA}" "${mean:-NA}" "${latency:-NA}" "${eps:-NA}" \
+        "${med:-NA}" "${p95:-NA}" \
+        "${hm:-NA}" "${overlap:-NA}" "${jaccard:-NA}" \
+        "${cpu_only:-NA}" "${gpu_only:-NA}" "${delta:-NA}" "${dup:-NA}" \
         "$det_pass" "$det_fail" \
         >> "$SUMMARY"
 }

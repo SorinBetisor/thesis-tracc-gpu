@@ -1,20 +1,24 @@
 #!/usr/bin/env bash
-# GPU resolver profiling script — runs with nsys (Nsight Systems) and optionally ncu
-# (Nsight Compute) to produce full GPU timeline + kernel-level metrics.
+# GPU resolver profiling script for the main CUDA greedy ambiguity resolver.
+# Runs nsys (Nsight Systems) and optionally ncu (Nsight Compute) to produce
+# full GPU timeline, resource-use, and kernel-level metrics.
 #
 # Usage:
-#   ./run_resolver_profile_nsys.sh [--nsys-only] [--ncu-only] [--n-candidates=N]
+#   ./run_resolver_profile_nsys.sh [--nsys-only] [--ncu-only]
+#                                   [--input-dump=<path>]
+#                                   [--n-candidates=N]
 #                                   [--conflict-density=low|med|high]
 #
 # Outputs are written to $OUTDIR (default: $THESIS_RESULTS_ROOT/<timestamp>_profile_nsys/).
-#   <n>_<density>.nsys-rep  — Nsight Systems report  (open with nsys-ui or nsys stats)
-#   <n>_<density>.ncu-rep   — Nsight Compute report   (open with ncu-ui or ncu --import)
-#   <n>_<density>_profile.txt — benchmark --profile text output (profile_*_ms fields)
+#   <case>.nsys-rep          — Nsight Systems report  (open with nsys-ui or nsys stats)
+#   <case>_ncu.ncu-rep       — Nsight Compute report  (open with ncu-ui or ncu --import)
+#   <case>_profile.txt       — benchmark --profile text output (profile_*_ms fields)
 set -euo pipefail
 
 export CUDA_HOME="${CUDA_HOME:-/usr/local/cuda-12.5}"
 export PATH="$CUDA_HOME/bin:$PATH"
 export LD_LIBRARY_PATH="$CUDA_HOME/lib64:${LD_LIBRARY_PATH:-}"
+LIBSTDCXX="${LIBSTDCXX:-/data/alice/sbetisor/spack/install/linux-zen/gcc-13.4.0-3p3kyjbqngl4pgiskjdmznqbs4ohroyg/lib64/libstdc++.so.6.0.32}"
 
 TRACCC_BIN="${TRACCC_BIN:-}"
 if [[ -z "$TRACCC_BIN" ]]; then
@@ -35,6 +39,9 @@ mkdir -p "$OUTDIR"
 
 N_CANDIDATES=10000
 CONFLICT_DENSITY="med"
+INPUT_DUMP=""
+REPEATS="${REPEATS:-5}"
+WARMUP="${WARMUP:-2}"
 RUN_NSYS=true
 RUN_NCU=true
 
@@ -42,18 +49,27 @@ for arg in "$@"; do
     case "$arg" in
         --nsys-only)         RUN_NCU=false ;;
         --ncu-only)          RUN_NSYS=false ;;
+        --input-dump=*)      INPUT_DUMP="${arg#*=}" ;;
         --n-candidates=*)    N_CANDIDATES="${arg#*=}" ;;
         --conflict-density=*) CONFLICT_DENSITY="${arg#*=}" ;;
     esac
 done
 
-BENCH_ARGS="--synthetic --n-candidates=$N_CANDIDATES --conflict-density=$CONFLICT_DENSITY --repeats=5 --warmup=2 --profile"
-BASE="$OUTDIR/n${N_CANDIDATES}_${CONFLICT_DENSITY}"
+if [[ -n "$INPUT_DUMP" ]]; then
+    BENCH_ARGS="--input-dump=$INPUT_DUMP --repeats=$REPEATS --warmup=$WARMUP --profile"
+    CASE_NAME="$(basename "$(dirname "$INPUT_DUMP")")_$(basename "$INPUT_DUMP" .json)"
+else
+    BENCH_ARGS="--synthetic --n-candidates=$N_CANDIDATES --conflict-density=$CONFLICT_DENSITY --repeats=$REPEATS --warmup=$WARMUP --profile"
+    CASE_NAME="n${N_CANDIDATES}_${CONFLICT_DENSITY}"
+fi
+BASE="$OUTDIR/$CASE_NAME"
 
 echo "=== GPU Resolver profiling ==="
 echo "Host:    $(hostname)"
 echo "Binary:  $TRACCC_BIN"
-echo "Config:  n_candidates=$N_CANDIDATES  conflict_density=$CONFLICT_DENSITY"
+echo "Mode:    main greedy baseline (no --conflict-graph flag)"
+echo "Config:  ${INPUT_DUMP:-n_candidates=$N_CANDIDATES conflict_density=$CONFLICT_DENSITY}"
+echo "Repeats: $REPEATS warmup=$WARMUP"
 echo "Output:  $OUTDIR"
 echo ""
 
@@ -62,14 +78,14 @@ nvidia-smi --query-gpu=name,driver_version,memory.total,compute_cap \
 echo ""
 
 # Warm-up the GPU before any profiled run
-"$TRACCC_BIN" --synthetic --n-candidates=1000 --conflict-density=med \
+LD_PRELOAD="$LIBSTDCXX" "$TRACCC_BIN" --synthetic --n-candidates=1000 --conflict-density=med \
     --repeats=1 --warmup=1 > /dev/null 2>&1 || true
 
 # ------------------------------------------------------------------
 # Benchmark --profile: emit profile_*_ms text output
 # ------------------------------------------------------------------
 echo "--- benchmark --profile run ---"
-"$TRACCC_BIN" $BENCH_ARGS 2>&1 | tee "${BASE}_profile.txt"
+LD_PRELOAD="$LIBSTDCXX" "$TRACCC_BIN" $BENCH_ARGS 2>&1 | tee "${BASE}_profile.txt"
 echo ""
 
 # ------------------------------------------------------------------
@@ -87,7 +103,7 @@ if $RUN_NSYS; then
             --output="${BASE}" \
             --force-overwrite=true \
             --stats=true \
-            "$TRACCC_BIN" $BENCH_ARGS \
+            env LD_PRELOAD="$LIBSTDCXX" "$TRACCC_BIN" $BENCH_ARGS \
             2>&1 | tee "${BASE}_nsys_stats.txt"
         echo ""
         echo "nsys report: ${BASE}.nsys-rep"
@@ -106,16 +122,15 @@ if $RUN_NCU; then
         echo "Add /path/to/nsight-compute/bin to PATH."
     else
         echo "--- ncu profile ---"
-        # Use --kernel-name-base=function to match by function name.
-        # Target the main eviction kernels by regex; --launch-count limits overhead.
+        # Main greedy kernels; --launch-count limits profiling overhead.
         ncu \
             --target-processes all \
-            --kernel-name "remove_tracks|update_status|rearrange_tracks|fill_vectors|fill_tracks_per_measurement|count_shared_measurements|fill_track_candidates" \
+            --kernel-name "remove_tracks|sort_updated_tracks|fill_inverted_ids|block_inclusive_scan|scan_block_offsets|add_block_offset|rearrange_tracks|update_status|fill_vectors|fill_tracks_per_measurement|count_shared_measurements|fill_track_candidates" \
             --set full \
             --launch-count 1 \
             --export "${BASE}_ncu" \
             --force-overwrite \
-            "$TRACCC_BIN" $BENCH_ARGS \
+            env LD_PRELOAD="$LIBSTDCXX" "$TRACCC_BIN" $BENCH_ARGS \
             2>&1 | tee "${BASE}_ncu_summary.txt"
         echo ""
         echo "ncu report: ${BASE}_ncu.ncu-rep"
