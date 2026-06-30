@@ -9,3 +9,4 @@ myprog
 build/
 cmake-build-*/
 commands.md
+CLAUDE.md
