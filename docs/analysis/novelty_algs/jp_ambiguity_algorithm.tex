@@ -1,0 +1,87 @@
+% Backend-agnostic Jones-Plassmann Ambiguity Resolution algorithm.
+% Self-contained and compilable (pdflatex). To reuse in the paper, copy only
+% the algorithm environment below into sec:methods; the preamble here just
+% provides the algorithm/algpseudocode packages so this file builds on its own.
+\documentclass[11pt]{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[margin=1in]{geometry}
+
+\begin{document}
+
+\begin{algorithm}
+\caption{Jones-Plassmann Ambiguity Resolution}
+\label{alg:jp_ambiguity}
+\begin{algorithmic}[1]
+
+\Statex \textbf{Filter tracks and initialize metrics}
+\State $\mathcal{T}_{\mathrm{accepted}} \gets \emptyset$
+\For{each track $t \in \mathcal{T}$}
+    \If{$|M(t)| \ge \text{min\_meas}$}
+        \State $\mathcal{T}_{\mathrm{accepted}} \gets \mathcal{T}_{\mathrm{accepted}} \cup \{t\}$
+    \EndIf
+\EndFor
+
+\Statex
+\Statex \textbf{Compute shared hit metrics and track quality scores}
+\For{each track $t \in \mathcal{T}_{\mathrm{accepted}}$}
+    \State $S(t) \gets \text{subset of } M(t) \text{ shared with other tracks}$
+    \State $R(t) \gets |S(t)|/|M(t)|$
+    \State $p(t) \gets \text{$p$-value from } (\chi^2, \text{nDoF})$
+\EndFor
+\State Sort $\mathcal{T}_{\mathrm{accepted}}$ to assign a unique removal priority $\pi$
+
+\Statex
+\Statex \textbf{Iterative batch ambiguity resolution}
+\For{$i \gets 1 \text{ \textbf{to} } N_{\mathrm{iter}}^{\max}$}
+    \If{$\mathcal{T}_{\mathrm{accepted}} = \emptyset$}
+        \State \textbf{break}
+    \EndIf
+
+    \State $n_{\mathrm{max}} \gets \max_{t \in \mathcal{T}_{\mathrm{accepted}}} |S(t)|$
+    \If{$n_{\mathrm{max}} < N_{\mathrm{shared}}^{\max}$}
+        \State \textbf{break}
+    \EndIf
+    \State $state[t] \gets \textproc{Undecided}$ for all $t \in \mathcal{T}_{\mathrm{accepted}}$
+
+    \Statex
+    \Statex \ \ \ \ \textbf{Propose the independent set of local priority maxima}
+    \For{each track $v \in \mathcal{T}_{\mathrm{accepted}}$ with $|S(v)| > 0$ in parallel}
+        \If{$\pi(v) > \pi(u)$ for all undecided neighbours $u$}
+            \State $state[v] \gets \textproc{In\_MIS}$
+        \EndIf
+    \EndFor
+
+    \Statex
+    \Statex \ \ \ \ \textbf{Suppress neighbours of the selected set}
+    \For{each undecided track $v \in \mathcal{T}_{\mathrm{accepted}}$ in parallel}
+        \If{$v$ shares a measurement with a track $u$ where $state[u] = \textproc{In\_MIS}$}
+            \State $state[v] \gets \textproc{Removed\_Neighbor}$
+        \EndIf
+    \EndFor
+
+    \Statex
+    \Statex \ \ \ \ \textbf{Apply batch removal}
+    \State $\mathcal{T}_{\mathrm{remove}} \gets \{t \in \mathcal{T}_{\mathrm{accepted}} \mid state[t] = \textproc{In\_MIS}\}$
+    \If{$\mathcal{T}_{\mathrm{remove}} = \emptyset$}
+        \State \textbf{break}
+    \EndIf
+    \State $\mathcal{T}_{\mathrm{accepted}} \gets \mathcal{T}_{\mathrm{accepted}} \setminus \mathcal{T}_{\mathrm{remove}}$
+
+    \Statex
+    \Statex \ \ \ \ \textbf{Update metrics for remaining affected tracks}
+    \For{each track $t \in \mathcal{T}_{\mathrm{accepted}}$ sharing measurements with $\mathcal{T}_{\mathrm{remove}}$}
+        \State $S(t) \gets S(t) \setminus M(\mathcal{T}_{\mathrm{remove}})$
+        \State $R(t) \gets |S(t)| / |M(t)|$
+    \EndFor
+    \State Re-sort $\mathcal{T}_{\mathrm{accepted}}$ to update removal priorities
+\EndFor
+
+\State \textbf{return} $\mathcal{T}_{\mathrm{accepted}}$
+
+\end{algorithmic}
+\end{algorithm}
+
+\end{document}
